@@ -1,0 +1,788 @@
+---
+MainSourceFile:  '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/dpct_out/5_Domain_Specific/HSOpticalFlow/solverKernel.dp.hpp'
+Replacements:
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          1563
+    Length:          0
+    ReplacementText: "#include <CL/sycl.hpp>\n#include <dpct/dpct.hpp>\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          1583
+    Length:          32
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          1616
+    Length:          34
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2571
+    Length:          11
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2842
+    Length:          0
+    ReplacementText: ",\n                                sycl::nd_item<3> item_ct1, volatile float *du,\n                                volatile float *dv"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2882
+    Length:          16
+    ReplacementText: auto
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2905
+    Length:          23
+    ReplacementText: 'item_ct1.get_group()'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2933
+    Length:          50
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          2986
+    Length:          50
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3055
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3069
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3082
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3111
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3125
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3138
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3210
+    Length:          14
+    ReplacementText: 'sycl::min(ix, (int)(w - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3227
+    Length:          14
+    ReplacementText: 'sycl::min(iy, (int)(h - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3312
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3331
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3664
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3733
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3746
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3778
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3791
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          3982
+    Length:          29
+    ReplacementText: 'sycl::min((unsigned int)(bsx + item_ct1.get_local_id(2)), (unsigned int)(w - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4052
+    Length:          15
+    ReplacementText: 'sycl::max((int)(bsy - 1), 0)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4104
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4212
+    Length:          20
+    ReplacementText: 'sycl::min((int)(bsy + by), (int)(h - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4360
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4429
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4442
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4474
+    Length:          10
+    ReplacementText: 'item_ct1.get_group(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4487
+    Length:          10
+    ReplacementText: 'item_ct1.get_local_range(1)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4678
+    Length:          29
+    ReplacementText: 'sycl::min((unsigned int)(bsy + item_ct1.get_local_id(2)), (unsigned int)(h - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4743
+    Length:          15
+    ReplacementText: 'sycl::max((int)(bsx - 1), 0)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4781
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4872
+    Length:          11
+    ReplacementText: 'item_ct1.get_local_id(2)'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          4991
+    Length:          20
+    ReplacementText: 'sycl::min((int)(bsx + bx), (int)(w - 1))'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          5134
+    Length:          13
+    ReplacementText: "/*\n  DPCT1065:18: Consider replacing sycl::nd_item::barrier() with sycl::nd_item::barrier(sycl::access::fence_space::local_space) for better performance if there is no access to global memory.\n  */\n  item_ct1.barrier()"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6807
+    Length:          4
+    ReplacementText: 'sycl::range<3>'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6820
+    Length:          5
+    ReplacementText: 1, 6, 32
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6845
+    Length:          4
+    ReplacementText: 'sycl::range<3>'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6857
+    Length:          42
+    ReplacementText: '1, iDivUp(h, threads[1]), iDivUp(w, threads[2])'
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6903
+    Length:          0
+    ReplacementText: "  /*\n  DPCT1049:19: The work-group size passed to the SYCL kernel may exceed the limit. To get the device limit, query info::device::max_work_group_size. Adjust the work-group size if needed.\n  */\n"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          6905
+    Length:          137
+    ReplacementText: "dpct::get_default_queue().submit(\n    [&](sycl::handler &cgh) {\n      sycl::accessor<float, 1, sycl::access_mode::read_write, sycl::access::target::local> du_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);\n      sycl::accessor<float, 1, sycl::access_mode::read_write, sycl::access::target::local> dv_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);\n\n      cgh.parallel_for(\n        sycl::nd_range<3>(blocks * threads, threads), \n        [=](sycl::nd_item<3> item_ct1) {\n          JacobiIteration<32, 6>(du0, dv0, Ix, Iy, Iz, w, h, s, alpha, du1, dv1, item_ct1, du_acc_ct1.get_pointer(), dv_acc_ct1.get_pointer());\n        });\n    });"
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: true
+  - FilePath:        '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+    Offset:          7042
+    Length:          1
+    ReplacementText: ''
+    ConstantFlag:    ''
+    ConstantOffset:  0
+    InitStr:         ''
+    NewHostVarName:  ''
+    BlockLevelFormatFlag: false
+DpctVersion:     2022.1.0
+MainHelperFileName: dpct
+USMLevel:        ''
+FeatureMap:
+  device.hpp:
+    device_ext:
+      IsCalled:        false
+      FeatureName:     ''
+      SubFeatureMap:
+        device_ext_default_queue:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+          FeatureName:     'device_ext::default_queue'
+          SubFeatureMap:   {}
+    get_current_device:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     get_current_device
+      SubFeatureMap:   {}
+    get_default_queue:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/addKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/solverKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     get_default_queue
+      SubFeatureMap:   {}
+  image.hpp:
+    create_image_wrapper:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     create_image_wrapper
+      SubFeatureMap:   {}
+    image_accessor_ext:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     image_accessor_ext
+      SubFeatureMap:   {}
+    image_channel:
+      IsCalled:        false
+      FeatureName:     ''
+      SubFeatureMap:
+        image_channel_create:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_channel::create'
+          SubFeatureMap:   {}
+    image_data:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     image_data
+      SubFeatureMap:
+        image_data_set_channel:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_channel'
+          SubFeatureMap:   {}
+        image_data_set_data_ptr:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_data_ptr'
+          SubFeatureMap:   {}
+        image_data_set_data_type:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_data_type'
+          SubFeatureMap:   {}
+        image_data_set_pitch:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_pitch'
+          SubFeatureMap:   {}
+        image_data_set_x:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_x'
+          SubFeatureMap:   {}
+        image_data_set_y:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_data::set_y'
+          SubFeatureMap:   {}
+    image_data_type:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/include/include/driver_types.h'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     image_data_type
+      SubFeatureMap:   {}
+    image_wrapper:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     image_wrapper
+      SubFeatureMap:
+        image_wrapper_get_access:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper::get_access'
+          SubFeatureMap:   {}
+    image_wrapper_base:
+      IsCalled:        false
+      FeatureName:     ''
+      SubFeatureMap:
+        image_wrapper_base_get_sampler:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::get_sampler'
+          SubFeatureMap:   {}
+        image_wrapper_base_set_addressing_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::set'
+          SubFeatureMap:   {}
+        image_wrapper_base_set_addressing_mode_filtering_mode_coordinate_normalization_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::set'
+          SubFeatureMap:   {}
+        image_wrapper_base_set_addressing_mode_filtering_mode_is_normalized:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::set'
+          SubFeatureMap:   {}
+        image_wrapper_base_set_coordinate_normalization_mode_enum:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::set'
+          SubFeatureMap:   {}
+        image_wrapper_base_set_filtering_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'image_wrapper_base::set'
+          SubFeatureMap:   {}
+    image_wrapper_base_p_alias:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     image_wrapper_base_p
+      SubFeatureMap:   {}
+    sampling_info:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+      FeatureName:     sampling_info
+      SubFeatureMap:
+        sampling_info_set_addressing_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'sampling_info::set'
+          SubFeatureMap:   {}
+        sampling_info_set_addressing_mode_filtering_mode_coordinate_normalization_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'sampling_info::set'
+          SubFeatureMap:   {}
+        sampling_info_set_addressing_mode_filtering_mode_is_normalized:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'sampling_info::set'
+          SubFeatureMap:   {}
+        sampling_info_set_coordinate_normalization_mode_enum:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'sampling_info::set'
+          SubFeatureMap:   {}
+        sampling_info_set_filtering_mode:
+          IsCalled:        true
+          CallerSrcFiles:
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/derivativesKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/downscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/upscaleKernel.cuh'
+            - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/warpingKernel.cuh'
+          FeatureName:     'sampling_info::set'
+          SubFeatureMap:   {}
+  memory.hpp:
+    dpct_memcpy:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memcpy
+      SubFeatureMap:   {}
+    dpct_memcpy_2d:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memcpy
+      SubFeatureMap:   {}
+    dpct_memcpy_3d:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memcpy
+      SubFeatureMap:   {}
+    dpct_memset:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memset
+      SubFeatureMap:   {}
+    dpct_memset_2d:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memset
+      SubFeatureMap:   {}
+    dpct_memset_3d:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     dpct_memset
+      SubFeatureMap:   {}
+    memcpy_direction:
+      IsCalled:        true
+      CallerSrcFiles:
+        - '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow/flowCUDA.cu'
+      FeatureName:     memcpy_direction
+      SubFeatureMap:   {}
+CompileTargets:  {}
+OptionMap:
+  AsyncHandler:
+    Value:           'false'
+    Specified:       false
+  CommentsEnabled:
+    Value:           'false'
+    Specified:       false
+  CompilationsDir:
+    Value:           '/home/u120111/workspace/cuda-samples/Samples/5_Domain_Specific/HSOpticalFlow'
+    Specified:       true
+  CtadEnabled:
+    Value:           'false'
+    Specified:       false
+  CustomHelperFileName:
+    Value:           dpct
+    Specified:       false
+  ExperimentalFlag:
+    Value:           '0'
+    Specified:       false
+  ExplicitClNamespace:
+    Value:           'false'
+    Specified:       false
+  ExplicitNamespace:
+    Value:           '20'
+    Specified:       false
+  ExtensionFlag:
+    Value:           '4294967295'
+    Specified:       false
+  NDRangeDim:
+    Value:           '3'
+    Specified:       false
+  NoDRYPattern:
+    Value:           'false'
+    Specified:       false
+  OptimizeMigration:
+    Value:           'false'
+    Specified:       false
+  ProcessAll:
+    Value:           'false'
+    Specified:       false
+  RuleFile:
+    Value:           ''
+    Specified:       false
+  SyclNamedLambda:
+    Value:           'false'
+    Specified:       false
+  UsmLevel:
+    Value:           '1'
+    Specified:       false
+...
