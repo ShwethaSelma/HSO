@@ -117,7 +117,7 @@ void ComputeFlowCUDA(const float *I0, const float *I1, int width, int height,
   for (; currentLevel > 0; --currentLevel) {
     int nw = pW[currentLevel] / 2;
     int nh = pH[currentLevel] / 2;
-    int ns = pW[currentLevel] / 2;
+    int ns = iAlignUp(nw);
 
     *(pI0 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
     *(pI1 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
