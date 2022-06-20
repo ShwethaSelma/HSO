@@ -108,7 +108,7 @@ static void Downscale(const float *src, int width, int height, int stride,
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
   texRes.set_x(width);
   texRes.set_y(height);
-  texRes.set_pitch(stride * sizeof(float));
+  texRes.set_pitch(stride * 4 * sizeof(float));
 
   dpct::sampling_info texDescr;
   memset(&texDescr, 0, sizeof(dpct::sampling_info));

@@ -47,23 +47,22 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Common constants
 ///////////////////////////////////////////////////////////////////////////////
-const int StrideAlignment = 32;
+const int StrideAlignment = 8;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Common functions
 ///////////////////////////////////////////////////////////////////////////////
 
 // Align up n to the nearest multiple of m
-// inline int iAlignUp(int n, int m = StrideAlignment) {
-//   return n;
+inline int iAlignUp(int n, int m = StrideAlignment) {
 
-//   int mod = n % m;
+  int mod = n % m;
 
-//   if (mod)
-//     return n + m - mod;
-//   else
-//     return n;
-// }
+  if (mod)
+    return n + m - mod;
+  else
+    return n;
+}
 
 // round up n/m
 inline int iDivUp(int n, int m) { return (n + m - 1) / m; }

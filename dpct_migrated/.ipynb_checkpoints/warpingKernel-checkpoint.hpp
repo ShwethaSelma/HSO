@@ -105,7 +105,7 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
   texRes.set_x(w);
   texRes.set_y(h);
-  texRes.set_pitch(s * sizeof(float));
+  texRes.set_pitch(s * 4 * sizeof(float));
 
   dpct::sampling_info texDescr;
   memset(&texDescr, 0, sizeof(dpct::sampling_info));

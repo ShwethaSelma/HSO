@@ -154,7 +154,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
   texRes.set_x(w);
   texRes.set_y(h);
-  texRes.set_pitch(s * sizeof(float));
+  texRes.set_pitch(s * 4 * sizeof(float));
 
   dpct::sampling_info texDescr;
   memset(&texDescr, 0, sizeof(dpct::sampling_info));
@@ -180,7 +180,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());        //+float4
   texRes.set_x(w);
   texRes.set_y(h);
-  texRes.set_pitch(s * sizeof(float));
+  texRes.set_pitch(s * 4 * sizeof(float));
   texTarget = dpct::create_image_wrapper(texRes, texDescr);
   
   /*
