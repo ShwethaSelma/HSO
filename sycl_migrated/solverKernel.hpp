@@ -135,7 +135,8 @@ void JacobiIteration(const float *du0, const float *dv0,
     }
   }
 
-  item_ct1.barrier();
+  //item_ct1.barrier();
+  group_barrier(item_ct1.get_group());
 
   if (ix >= w || iy >= h) return;
 
