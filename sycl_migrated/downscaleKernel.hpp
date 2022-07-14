@@ -100,7 +100,15 @@ static void Downscale(const float *src, int width, int height, int stride,
       src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
     }
   }
-  
+//    printf("\n Height: %d Width: %d Stride: %d\n",height, width, stride);
+//    printf("\nSRC_IN: \n");
+//     for (int i=0; i < 10; i++) {
+//       for (int j=0; j < 10; j++) {// newWidth // newStride
+//         printf("%f ", src_p[(i * stride + j) * 4]);
+//       }
+//       printf("\n");
+//     }
+
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
                                     sycl::filtering_mode::linear);
