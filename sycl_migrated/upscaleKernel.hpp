@@ -74,6 +74,13 @@ static void Upscale(const float *src, int width, int height, int stride,
                     int newWidth, int newHeight, int newStride, float scale,
                     float *out, queue q) {
   sycl::range<3> threads(1, 8, 32);
+  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1]*threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, iDivUp(newHeight, threads[1]),
                         iDivUp(newWidth, threads[2]));
   

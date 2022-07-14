@@ -58,6 +58,13 @@ void AddKernel(const float *op1, const float *op2, int count,
 ///////////////////////////////////////////////////////////////////////////////
 static void Add(const float *op1, const float *op2, int count, float *sum, queue q) {
   sycl::range<3> threads(1, 1, 256);
+  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1] * threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 256;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, 1, iDivUp(count, threads[2]));
 
   q.parallel_for(

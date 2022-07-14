@@ -79,6 +79,13 @@ void WarpingKernel(int width, int height, int stride, const float *u,
 static void WarpImage(const float *src, int w, int h, int s, const float *u,
                       const float *v, float *out, queue q) {
   sycl::range<3> threads(1, 6, 32);
+  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1]*threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
   
   int dataSize = s * h * sizeof(float);

@@ -82,6 +82,13 @@ void DownscaleKernel(int width, int height, int stride, float *out,
 static void Downscale(const float *src, int width, int height, int stride,
                       int newWidth, int newHeight, int newStride, float *out, queue q) {
   sycl::range<3> threads(1, 8, 32);
+   auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1]*threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, iDivUp(newHeight, threads[1]),
                         iDivUp(newWidth, threads[2]));
   
@@ -100,14 +107,6 @@ static void Downscale(const float *src, int width, int height, int stride,
       src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
     }
   }
-//    printf("\n Height: %d Width: %d Stride: %d\n",height, width, stride);
-//    printf("\nSRC_IN: \n");
-//     for (int i=0; i < 10; i++) {
-//       for (int j=0; j < 10; j++) {// newWidth // newStride
-//         printf("%f ", src_p[(i * stride + j) * 4]);
-//       }
-//       printf("\n");
-//     }
 
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 

@@ -123,6 +123,13 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
 static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
                                int s, float *Ix, float *Iy, float *Iz, queue q) {
   sycl::range<3> threads(1, 6, 32);
+   auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1] * threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
   
   int dataSize = s * h * sizeof(float);
