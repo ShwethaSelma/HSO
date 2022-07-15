@@ -102,9 +102,7 @@ static void Downscale(const float *src, int width, int height, int stride,
 
   texRes.set_data_type(dpct::image_data_type::pitch);
   texRes.set_data_ptr((void *)src_p);
-  /*
-  DPCT1059:1: SYCL only supports 4-channel image format. Adjust the code.
-  */
+ 
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
   texRes.set_x(width);
   texRes.set_y(height);
