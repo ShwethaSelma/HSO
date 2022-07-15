@@ -52,16 +52,16 @@ void DownscaleKernel(int width, int height, int stride, float *out,
     return;
   }
 
-  float dx = 1.0f / (float)width;
-  float dy = 1.0f / (float)height;
+//   float dx = 1.0f / (float)width;
+//   float dy = 1.0f / (float)height;
 
-  float x = ((float)ix + 0.5f) * dx;
-  float y = ((float)iy + 0.5f) * dy;
+  float x = ((float)ix + 0.5f) ;
+  float y = ((float)iy + 0.5f) ;
   
-  auto inputCoords1 = float2(x - dx * 0.25f, y);
-  auto inputCoords2 = float2(x + dx * 0.25f, y);
-  auto inputCoords3 = float2(x, y - dy * 0.25f);
-  auto inputCoords4 = float2(x, y + dy * 0.25f);
+  auto inputCoords1 = float2(x - 0.25f, y);
+  auto inputCoords2 = float2(x + 0.25f, y);
+  auto inputCoords3 = float2(x, y - 0.25f);
+  auto inputCoords4 = float2(x, y + 0.25f);
   
   out[ix + iy * stride] =
     0.25f *
@@ -108,7 +108,7 @@ static void Downscale(const float *src, int width, int height, int stride,
     }
   }
 
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
+  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
                                     sycl::filtering_mode::linear);
   

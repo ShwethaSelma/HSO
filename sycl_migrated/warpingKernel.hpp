@@ -101,7 +101,7 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
   }
   }
 
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
+  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
                                     sycl::filtering_mode::linear);
   

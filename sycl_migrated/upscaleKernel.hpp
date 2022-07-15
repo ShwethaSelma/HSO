@@ -96,7 +96,7 @@ static void Upscale(const float *src, int width, int height, int stride,
     src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
   }
   }
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
+  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
                                     sycl::filtering_mode::linear);
   
