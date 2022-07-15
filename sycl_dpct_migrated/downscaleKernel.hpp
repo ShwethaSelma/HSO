@@ -96,7 +96,7 @@ static void Downscale(const float *src, int width, int height, int stride,
     }
   }
   
-   dpct::image_wrapper_base_p texFine;
+  dpct::image_wrapper_base_p texFine;
   dpct::image_data texRes;
   memset(&texRes, 0, sizeof(dpct::image_data));
 
