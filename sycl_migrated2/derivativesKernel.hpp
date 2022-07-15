@@ -55,18 +55,18 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
 
   if (ix >= width || iy >= height) return;
 
-  float dx = 1.0f / (float)width;
-  float dy = 1.0f / (float)height;
+//   float dx = 1.0f / (float)width;
+//   float dy = 1.0f / (float)height;
 
-  float x = ((float)ix + 0.5f) * dx;
-  float y = ((float)iy + 0.5f) * dy;
+  float x = ((float)ix + 0.5f);
+  float y = ((float)iy + 0.5f);
 
   float t0, t1;
   // x derivative
-  auto x_inputCoords1 = float2(x - 2.0f * dx, y);
-  auto x_inputCoords2 = float2(x - 1.0f * dx, y);
-  auto x_inputCoords3 = float2(x + 1.0f * dx, y);
-  auto x_inputCoords4 = float2(x + 2.0f * dx, y);
+  auto x_inputCoords1 = float2(x - 2.0f, y);
+  auto x_inputCoords2 = float2(x - 1.0f, y);
+  auto x_inputCoords3 = float2(x + 1.0f, y);
+  auto x_inputCoords4 = float2(x + 2.0f, y);
 
   t0 = texSource.read(x_inputCoords1, texDesc)[0];
   t0 -= texSource.read(x_inputCoords2, texDesc)[0] * 8.0f;
@@ -87,10 +87,10 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   Iz[pos] = texTarget.read(inputCoord, texDesc)[0] - texSource.read(inputCoord, texDesc)[0];
 
   // y derivative
-  auto y_inputCoords1 = float2(x, y - 2.0f * dy);
-  auto y_inputCoords2 = float2(x, y - 1.0f * dy);
-  auto y_inputCoords3 = float2(x, y + 1.0f * dy);
-  auto y_inputCoords4 = float2(x, y + 2.0f * dy);
+  auto y_inputCoords1 = float2(x, y - 2.0f);
+  auto y_inputCoords2 = float2(x, y - 1.0f);
+  auto y_inputCoords3 = float2(x, y + 1.0f);
+  auto y_inputCoords4 = float2(x, y + 2.0f);
   
   t0 = texSource.read(y_inputCoords1, texDesc)[0];
   t0 -= texSource.read(y_inputCoords2, texDesc)[0] * 8.0f;
