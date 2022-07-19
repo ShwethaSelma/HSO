@@ -157,7 +157,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   }
    }
 
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
+  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
                                     sycl::filtering_mode::linear);
   
