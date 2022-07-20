@@ -112,7 +112,7 @@ bool LoadImageAsFP32(float *&img_data, int &img_w, int &img_h, int &img_s,
 
   img_w = w;
   img_h = h;
-  img_s = iAlignUp(img_w);
+  img_s =  iAlignUp(img_w);
 
   img_data = new float[img_s * h];
 

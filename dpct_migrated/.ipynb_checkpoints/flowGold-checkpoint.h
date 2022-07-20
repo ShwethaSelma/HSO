@@ -25,46 +25,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <CL/sycl.hpp>
-#include <dpct/dpct.hpp>
-#include "common.h"
+#ifndef FLOW_GOLD_H
+#define FLOW_GOLD_H
 
-using namespace sycl;
+void ComputeFlowGold(
+    const float *I0,  // source frame
+    const float *I1,  // tracked frame
+    int width,        // frame width
+    int height,       // frame height
+    int stride,       // row access stride
+    float alpha,      // smoothness coefficient
+    int nLevels,      // number of levels in pyramid
+    int nWarpIters,   // number of warping iterations per pyramid level
+    int nIters,       // number of solver iterations (for linear system)
+    float *u,         // output horizontal flow
+    float *v);        // output vertical flow
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief add two vectors of size _count_
-///
-/// CUDA kernel
-/// \param[in]  op1   term one
-/// \param[in]  op2   term two
-/// \param[in]  count vector size
-/// \param[out] sum   result
-///////////////////////////////////////////////////////////////////////////////
-void AddKernel(const float *op1, const float *op2, int count,
-                          float *sum, sycl::nd_item<3> item_ct1) {
-  const int pos = item_ct1.get_local_id(2) +
-                  item_ct1.get_group(2) * item_ct1.get_local_range().get(2);
-
-  if (pos >= count) return;
-
-  sum[pos] = op1[pos] + op2[pos];
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief add two vectors of size _count_
-/// \param[in]  op1   term one
-/// \param[in]  op2   term two
-/// \param[in]  count vector size
-/// \param[out] sum   result
-///////////////////////////////////////////////////////////////////////////////
-static void Add(const float *op1, const float *op2, int count, float *sum, queue q) {
-  sycl::range<3> threads(1, 1, 256);
-  sycl::range<3> blocks(1, 1, iDivUp(count, threads[2]));
-
-  q.parallel_for(
-      sycl::nd_range<3>(blocks * threads, threads),
-      [=](sycl::nd_item<3> item_ct1) {
-        AddKernel(op1, op2, count, sum, item_ct1);
-      }).wait();
-}
-
+#endif

@@ -56,46 +56,43 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   const int pos = ix + iy * stride;
 
   if (ix >= width || iy >= height) return;
-
-  float dx = 1.0f / (float)width;
-  float dy = 1.0f / (float)height;
-
-  float x = ((float)ix + 0.5f) * dx;
-  float y = ((float)iy + 0.5f) * dy;
+  
+  float x = ((float)ix);
+  float y = ((float)iy);
 
   float t0, t1;
   // x derivative
-  t0 = texSource.read(x - 2.0f * dx, y)[0];
-  t0 -= texSource.read(x - 1.0f * dx, y)[0] * 8.0f;
-  t0 += texSource.read(x + 1.0f * dx, y)[0] * 8.0f;
-  t0 -= texSource.read(x + 2.0f * dx, y)[0];
+  t0 = texSource.read(x, y)[0];
+  t0 -= texSource.read(x, y)[0] * 8.0f;
+  t0 += texSource.read(x, y)[0] * 8.0f;
+  t0 -= texSource.read(x, y)[0];
   t0 /= 12.0f;
 
-  t1 = texTarget.read(x - 2.0f * dx, y)[0];
-  t1 -= texTarget.read(x - 1.0f * dx, y)[0] * 8.0f;
-  t1 += texTarget.read(x + 1.0f * dx, y)[0] * 8.0f;
-  t1 -= texTarget.read(x + 2.0f * dx, y)[0];
+  t1 = texTarget.read(x, y)[0];
+  t1 -= texTarget.read(x, y)[0] * 8.0f;
+  t1 += texTarget.read(x, y)[0] * 8.0f;
+  t1 -= texTarget.read(x, y)[0];
   t1 /= 12.0f;
 
-  Ix[pos] = (t0 + t1) * 0.5f;
+  Ix[pos] = (t0 + t1);
 
   // t derivative
   Iz[pos] = texTarget.read(x, y)[0] - texSource.read(x, y)[0];
 
   // y derivative
-  t0 = texSource.read(x, y - 2.0f * dy)[0];
-  t0 -= texSource.read(x, y - 1.0f * dy)[0] * 8.0f;
-  t0 += texSource.read(x, y + 1.0f * dy)[0] * 8.0f;
-  t0 -= texSource.read(x, y + 2.0f * dy)[0];
+  t0 = texSource.read(x, y)[0];
+  t0 -= texSource.read(x, y)[0] * 8.0f;
+  t0 += texSource.read(x, y)[0] * 8.0f;
+  t0 -= texSource.read(x, y)[0];
   t0 /= 12.0f;
 
-  t1 = texTarget.read(x, y - 2.0f * dy)[0];
-  t1 -= texTarget.read(x, y - 1.0f * dy)[0] * 8.0f;
-  t1 += texTarget.read(x, y + 1.0f * dy)[0] * 8.0f;
-  t1 -= texTarget.read(x, y + 2.0f * dy)[0];
+  t1 = texTarget.read(x, y)[0];
+  t1 -= texTarget.read(x, y)[0] * 8.0f;
+  t1 += texTarget.read(x, y)[0] * 8.0f;
+  t1 -= texTarget.read(x, y)[0];
   t1 /= 12.0f;
 
-  Iy[pos] = (t0 + t1) * 0.5f;
+  Iy[pos] = (t0 + t1);
 }
 
 
@@ -114,6 +111,13 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
 static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
                                int s, float *Ix, float *Iy, float *Iz, queue q) {
   sycl::range<3> threads(1, 6, 32);
+  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1] * threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
   
   int dataSize = s * h * sizeof(float);
@@ -148,24 +152,19 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   texRes.set_data_type(dpct::image_data_type::pitch);
   texRes.set_data_ptr((void *)I0_p);
   
-  /*
-  DPCT1059:13: SYCL only supports 4-channel image format. Adjust the code.
-  */
+
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
   texRes.set_x(w);
   texRes.set_y(h);
-  texRes.set_pitch(s * 4 * sizeof(float));
+  texRes.set_pitch(s * sizeof(sycl::float4));
 
   dpct::sampling_info texDescr;
   memset(&texDescr, 0, sizeof(dpct::sampling_info));
 
-  texDescr.set(sycl::addressing_mode::mirrored_repeat,
-               sycl::filtering_mode::linear,
-               sycl::coordinate_normalization_mode::normalized);
-  /*
-  DPCT1004:14: Compatible DPC++ code could not be generated.
-  */
-  //texDescr.readMode = cudaReadModeElementType;
+  texDescr.set(sycl::addressing_mode::clamp,
+               sycl::filtering_mode::nearest,
+               sycl::coordinate_normalization_mode::unnormalized);
+  
   texSource = dpct::create_image_wrapper(texRes, texDescr);
   
   memset(&texRes, 0, sizeof(dpct::image_data));
@@ -174,20 +173,12 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   texRes.set_data_ptr((void *)I1_p);
   
 
-  /*
-  DPCT1059:16: SYCL only supports 4-channel image format. Adjust the code.
-  */
-  texRes.set_channel(dpct::image_channel::create<sycl::float4>());        //+float4
+  texRes.set_channel(dpct::image_channel::create<sycl::float4>());       
   texRes.set_x(w);
   texRes.set_y(h);
-  texRes.set_pitch(s * 4 * sizeof(float));
+  texRes.set_pitch(s * sizeof(sycl::float4));
   texTarget = dpct::create_image_wrapper(texRes, texDescr);
   
-  /*
-  DPCT1049:12: The workgroup size passed to the SYCL kernel may exceed the
-  limit. To get the device limit, query info::device::max_work_group_size.
-  Adjust the workgroup size if needed.
-  */
   q.submit([&](sycl::handler &cgh) {
     auto texSource_acc =
         static_cast<dpct::image_wrapper<cl::sycl::float4, 2> *>(texSource)->get_access(

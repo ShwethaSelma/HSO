@@ -56,7 +56,19 @@ void ComputeFlowCUDA(const float *I0, const float *I1, int width, int height,
                      int stride, float alpha, int nLevels, int nWarpIters,
                      int nSolverIters, float *u, float *v) {
 
-  queue q{default_selector(), property::queue::in_order()};
+  auto exception_handler = [](exception_list exceptions) {
+        for (std::exception_ptr const& e : exceptions) {
+            try {
+                std::rethrow_exception(e);
+            }
+            catch (exception const& e) {
+                std::cout << "Caught asynchronous SYCL exception:\n"
+                          << e.what() << std::endl;
+            }
+        }
+    };
+
+  queue q{default_selector(), exception_handler, property::queue::in_order()};
   printf("Computing optical flow on GPU...\n");
    std::cout << "\nRunning on "
             << q.get_device().get_info<sycl::info::device::name>() << "\n";

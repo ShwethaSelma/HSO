@@ -130,7 +130,7 @@ static void Downscale(const float *src, int width, int height, int stride,
       sum += Tex2Di(src, width, height, stride, srcX + 1, srcY + 0);
       sum += Tex2Di(src, width, height, stride, srcX + 1, srcY + 1);
       // normalize
-      sum *= 0.25f;
+      sum *= 1;//0.25f;
       out[j + i * newStride] = sum;
     }
   }
@@ -211,38 +211,38 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
       float t0, t1;
       // derivative filter is (1, -8, 0, 8, -1)/12
       // x derivative
-      t0 = Tex2Di(I0, w, h, s, j - 2, i);
-      t0 -= Tex2Di(I0, w, h, s, j - 1, i) * 8.0f;
-      t0 += Tex2Di(I0, w, h, s, j + 1, i) * 8.0f;
-      t0 -= Tex2Di(I0, w, h, s, j + 2, i);
+      t0 = Tex2Di(I0, w, h, s, j - 0, i);
+      t0 -= Tex2Di(I0, w, h, s, j - 0, i) * 8.0f;
+      t0 += Tex2Di(I0, w, h, s, j + 0, i) * 8.0f;
+      t0 -= Tex2Di(I0, w, h, s, j + 0, i);
       t0 /= 12.0f;
 
-      t1 = Tex2Di(I1, w, h, s, j - 2, i);
-      t1 -= Tex2Di(I1, w, h, s, j - 1, i) * 8.0f;
-      t1 += Tex2Di(I1, w, h, s, j + 1, i) * 8.0f;
-      t1 -= Tex2Di(I1, w, h, s, j + 2, i);
+      t1 = Tex2Di(I1, w, h, s, j - 0, i);
+      t1 -= Tex2Di(I1, w, h, s, j - 0, i) * 8.0f;
+      t1 += Tex2Di(I1, w, h, s, j + 0, i) * 8.0f;
+      t1 -= Tex2Di(I1, w, h, s, j + 0, i);
       t1 /= 12.0f;
 
       // spatial derivatives are averaged
-      Ix[pos] = (t0 + t1) * 0.5f;
+      Ix[pos] = (t0 + t1);// * 0.5f;
 
       // t derivative
       Iz[pos] = I1[pos] - I0[pos];
 
       // y derivative
-      t0 = Tex2Di(I0, w, h, s, j, i - 2);
-      t0 -= Tex2Di(I0, w, h, s, j, i - 1) * 8.0f;
-      t0 += Tex2Di(I0, w, h, s, j, i + 1) * 8.0f;
-      t0 -= Tex2Di(I0, w, h, s, j, i + 2);
+      t0 = Tex2Di(I0, w, h, s, j, i - 0);
+      t0 -= Tex2Di(I0, w, h, s, j, i - 0) * 8.0f;
+      t0 += Tex2Di(I0, w, h, s, j, i + 0) * 8.0f;
+      t0 -= Tex2Di(I0, w, h, s, j, i + 0);
       t0 /= 12.0f;
 
-      t1 = Tex2Di(I1, w, h, s, j, i - 2);
-      t1 -= Tex2Di(I1, w, h, s, j, i - 1) * 8.0f;
-      t1 += Tex2Di(I1, w, h, s, j, i + 1) * 8.0f;
-      t1 -= Tex2Di(I1, w, h, s, j, i + 2);
+      t1 = Tex2Di(I1, w, h, s, j, i - 0);
+      t1 -= Tex2Di(I1, w, h, s, j, i - 0) * 8.0f;
+      t1 += Tex2Di(I1, w, h, s, j, i + 0) * 8.0f;
+      t1 -= Tex2Di(I1, w, h, s, j, i + 0);
       t1 /= 12.0f;
 
-      Iy[pos] = (t0 + t1) * 0.5f;
+      Iy[pos] = (t0 + t1);// * 0.5f;
     }
   }
 }

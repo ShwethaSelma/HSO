@@ -32,106 +32,102 @@
 using namespace sycl;
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief warp image with a given displacement field, CUDA kernel.
-/// \param[in]  width   image width
-/// \param[in]  height  image height
-/// \param[in]  stride  image stride
-/// \param[in]  u       horizontal displacement
-/// \param[in]  v       vertical displacement
+/// \brief upscale one component of a displacement field, CUDA kernel
+/// \param[in]  width   field width
+/// \param[in]  height  field height
+/// \param[in]  stride  field stride
+/// \param[in]  scale   scale factor (multiplier)
 /// \param[out] out     result
 ///////////////////////////////////////////////////////////////////////////////
-void WarpingKernel(int width, int height, int stride, const float *u,
-                   const float *v, float *out,
-                 dpct::image_accessor_ext<cl::sycl::float4, 2> texToWarp,
+void UpscaleKernel(int width, int height, int stride, float scale, float *out,
+dpct::image_accessor_ext<cl::sycl::float4, 2> texCoarse,
                    sycl::nd_item<3> item_ct1) {
   const int ix = item_ct1.get_local_id(2) +
                  item_ct1.get_group(2) * item_ct1.get_local_range().get(2);
   const int iy = item_ct1.get_local_id(1) +
                  item_ct1.get_group(1) * item_ct1.get_local_range().get(1);
 
-  const int pos = ix + iy * stride;
-
   if (ix >= width || iy >= height) return;
 
-  float x = ((float)ix + u[pos] + 0.5f) / (float)width;
-  float y = ((float)iy + v[pos] + 0.5f) / (float)height;
+  float x = ((float)ix + 0.5f);
+  float y = ((float)iy + 0.5f);
 
-  out[pos] = texToWarp.read(x, y)[0];
+  // exploit hardware interpolation
+  // and scale interpolated vector to match next pyramid level resolution
+  out[ix + iy * stride] = texCoarse.read(x, y)[0] * scale;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief warp image with provided vector field, CUDA kernel wrapper.
-///
-/// For each output pixel there is a vector which tells which pixel
-/// from a source image should be mapped to this particular output
-/// pixel.
-/// It is assumed that images and the vector field have the same stride and
-/// resolution.
-/// \param[in]  src source image
-/// \param[in]  w   width
-/// \param[in]  h   height
-/// \param[in]  s   stride
-/// \param[in]  u   horizontal displacement
-/// \param[in]  v   vertical displacement
-/// \param[out] out warped image
+/// \brief upscale one component of a displacement field, kernel wrapper
+/// \param[in]  src         field component to upscale
+/// \param[in]  width       field current width
+/// \param[in]  height      field current height
+/// \param[in]  stride      field current stride
+/// \param[in]  newWidth    field new width
+/// \param[in]  newHeight   field new height
+/// \param[in]  newStride   field new stride
+/// \param[in]  scale       value scale factor (multiplier)
+/// \param[out] out         upscaled field component
 ///////////////////////////////////////////////////////////////////////////////
-static void WarpImage(const float *src, int w, int h, int s, const float *u,
-                      const float *v, float *out, queue q) {
-  sycl::range<3> threads(1, 6, 32);
-  sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
+static void Upscale(const float *src, int width, int height, int stride,
+                    int newWidth, int newHeight, int newStride, float scale,
+                    float *out, queue q) {
+  sycl::range<3> threads(1, 8, 32);
+  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if( max_wg_size < threads[1] * threads[2])
+  {
+    threads[0] = 1;
+    threads[2] = 32;
+    threads[1] = max_wg_size / threads[2];
+  }
+  sycl::range<3> blocks(1, iDivUp(newHeight, threads[1]),
+                        iDivUp(newWidth, threads[2]));
   
-  int dataSize = s * h * sizeof(float);
+  int dataSize = stride * height * sizeof(float);
   float *src_h = (float *)malloc(dataSize);
   q.memcpy(src_h, src, dataSize).wait();
   
   float *src_p = (float *)sycl::malloc_shared(4 * dataSize, q);
-  for (int i=0; i < h; i++) {
-    for (int j = 0; j< w; j++){
-      int index = i * s + j;
+  for (int i=0; i < height; i++) {
+    for (int j = 0; j< width; j++){
+      int index = i * stride + j;
     src_p[index * 4 + 0] = src_h[index];
     src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
   }
   }
-
-   dpct::image_wrapper_base_p texToWarp;
+  dpct::image_wrapper_base_p texCoarse;
   dpct::image_data texRes;
   memset(&texRes, 0, sizeof(dpct::image_data));
 
   texRes.set_data_type(dpct::image_data_type::pitch);
   texRes.set_data_ptr((void *)src_p);
-  /*
-  DPCT1059:9: SYCL only supports 4-channel image format. Adjust the code.
-  */
+ 
   texRes.set_channel(dpct::image_channel::create<sycl::float4>());
-  texRes.set_x(w);
-  texRes.set_y(h);
-  texRes.set_pitch(s * 4 * sizeof(float));
+  texRes.set_x(width);
+  texRes.set_y(height);
+  texRes.set_pitch(stride * sizeof(sycl::float4));
 
   dpct::sampling_info texDescr;
   memset(&texDescr, 0, sizeof(dpct::sampling_info));
 
-  texDescr.set(sycl::addressing_mode::mirrored_repeat,
-               sycl::filtering_mode::linear,
-               sycl::coordinate_normalization_mode::normalized);
-  /*
-  DPCT1004:10: Compatible DPC++ code could not be generated.
-  */
-  //texDescr.readMode = cudaReadModeElementType;
+  texDescr.set(sycl::addressing_mode::clamp,
+               sycl::filtering_mode::nearest,
+               sycl::coordinate_normalization_mode::unnormalized);
 
-  texToWarp = dpct::create_image_wrapper(texRes, texDescr);
-  
+  texCoarse = dpct::create_image_wrapper(texRes, texDescr);
+
   q.submit([&](sycl::handler &cgh) {
-    auto texToWarp_acc =
-        static_cast<dpct::image_wrapper<cl::sycl::float4, 2> *>(texToWarp)->get_access(
+    auto texCoarse_acc =
+        static_cast<dpct::image_wrapper<cl::sycl::float4, 2> *>(texCoarse)->get_access(
             cgh);
 
-    auto texToWarp_smpl = texToWarp->get_sampler();
+    auto texCoarse_smpl = texCoarse->get_sampler();
 
     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
                      [=](sycl::nd_item<3> item_ct1) {
-                       WarpingKernel(w, h, s, u, v, out,
+                       UpscaleKernel(newWidth, newHeight, newStride, scale, out,
                                      dpct::image_accessor_ext<cl::sycl::float4, 2>(
-                                         texToWarp_smpl, texToWarp_acc),
+                                         texCoarse_smpl, texCoarse_acc),
                                      item_ct1);
                      });
   }).wait();

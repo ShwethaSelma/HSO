@@ -25,53 +25,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-///////////////////////////////////////////////////////////////////////////////
-// Header for common includes and utility functions
-///////////////////////////////////////////////////////////////////////////////
+#ifndef FLOW_CUDA_H
+#define FLOW_CUDA_H
 
-#ifndef COMMON_H
-#define COMMON_H
-
-///////////////////////////////////////////////////////////////////////////////
-// Common includes
-///////////////////////////////////////////////////////////////////////////////
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <memory.h>
-#include <math.h>
-
-#include <helper_cuda.h>
-
-///////////////////////////////////////////////////////////////////////////////
-// Common constants
-///////////////////////////////////////////////////////////////////////////////
-const int StrideAlignment = 8;
-
-///////////////////////////////////////////////////////////////////////////////
-// Common functions
-///////////////////////////////////////////////////////////////////////////////
-
-// Align up n to the nearest multiple of m
-inline int iAlignUp(int n, int m = StrideAlignment) {
-
-  int mod = n % m;
-
-  if (mod)
-    return n + m - mod;
-  else
-    return n;
-}
-
-// round up n/m
-inline int iDivUp(int n, int m) { return (n + m - 1) / m; }
-
-// swap two values
-template <typename T>
-inline void Swap(T &a, T &b) {
-  T t = a;
-  a = b;
-  b = t;
-}
+void ComputeFlowCUDA(
+    const float *I0,   // source frame
+    const float *I1,   // tracked frame
+    int width,         // frame width
+    int height,        // frame height
+    int stride,        // row access stride
+    float alpha,       // smoothness coefficient
+    int nLevels,       // number of levels in pyramid
+    int nWarpIters,    // number of warping iterations per pyramid level
+    int nSolverIters,  // number of solver iterations (for linear system)
+    float *u,          // output horizontal flow
+    float *v);         // output vertical flow
 #endif
