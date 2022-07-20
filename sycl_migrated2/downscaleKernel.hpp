@@ -63,20 +63,19 @@ void DownscaleKernel(int width, int height, int stride, float *out,
   float dx = 1.0f;                      //changed for unnormalization[63-67]
   float dy = 1.0f;
   
-  float var1 = 0;//0.5f;
-  float var2 = 1;//0.25f;
+  float var1 = 1;//0.25f;
 
-  float x = ((float)ix + var1) * dx;
-  float y = ((float)iy + var1) * dy;
+  float x = ((float)ix + 0.5f) * dx;
+  float y = ((float)iy + 0.5f) * dy;
   
-  auto inputCoords1 = float2(x - var2 * dx, y);
-  auto inputCoords2 = float2(x + var2 * dx, y);
-  auto inputCoords3 = float2(x, y - var2 * dy);
-  auto inputCoords4 = float2(x, y + var2 * dy);
+  auto inputCoords1 = float2(x - var1 * dx, y);
+  auto inputCoords2 = float2(x + var1 * dx, y);
+  auto inputCoords3 = float2(x, y - var1 * dy);
+  auto inputCoords4 = float2(x, y + var1 * dy);
     
   out[ix + iy * stride] =
-    (tex_acc.read(inputCoords1, texDesc)[0] + tex_acc.read(inputCoords2, texDesc)[0] + 
-     tex_acc.read(inputCoords3, texDesc)[0] + tex_acc.read(inputCoords4, texDesc)[0]);     //changed for unnormalization 
+   0.25f * (tex_acc.read(inputCoords1, texDesc)[0] + tex_acc.read(inputCoords2, texDesc)[0] + 
+     tex_acc.read(inputCoords3, texDesc)[0] + tex_acc.read(inputCoords4, texDesc)[0]);   
   }
 
 

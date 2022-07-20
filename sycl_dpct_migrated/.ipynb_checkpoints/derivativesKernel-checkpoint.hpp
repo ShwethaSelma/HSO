@@ -57,8 +57,8 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
 
   if (ix >= width || iy >= height) return;
   
-  float x = ((float)ix);
-  float y = ((float)iy);
+  float x = ((float)ix + 0.5f);
+  float y = ((float)iy + 0.5f);
 
   float t0, t1;
   // x derivative
@@ -74,7 +74,7 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   t1 -= texTarget.read(x, y)[0];
   t1 /= 12.0f;
 
-  Ix[pos] = (t0 + t1);
+  Ix[pos] = (t0 + t1) * 0.5f;
 
   // t derivative
   Iz[pos] = texTarget.read(x, y)[0] - texSource.read(x, y)[0];
@@ -92,7 +92,7 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   t1 -= texTarget.read(x, y)[0];
   t1 /= 12.0f;
 
-  Iy[pos] = (t0 + t1);
+  Iy[pos] = (t0 + t1) * 0.5f;
 }
 
 

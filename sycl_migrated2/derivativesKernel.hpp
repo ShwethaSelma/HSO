@@ -60,20 +60,19 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   
   float dx = 1.0f;                        //changed for unnormalization[61-69]
   float dy = 1.0f;
-  
-  float var1 = 0;//0.5f;                  
-  float var2 = 0;//2.0f;                 
-  float var3 = 0;//1.0f;                  
+                    
+  float var1 = 0;//2.0f;                 
+  float var2 = 0;//1.0f;                  
 
-  float x = ((float)ix + var1) * dx;
-  float y = ((float)iy + var1) * dy;
+  float x = ((float)ix + 0.5f) * dx;
+  float y = ((float)iy + 0.5f) * dy;
   
   float t0, t1;
   // x derivative
-  auto x_inputCoords1 = float2(x - var2 * dx, y);
-  auto x_inputCoords2 = float2(x - var3 * dx, y);
-  auto x_inputCoords3 = float2(x + var3 * dx, y);
-  auto x_inputCoords4 = float2(x + var2 * dx, y);
+  auto x_inputCoords1 = float2(x - var1 * dx, y);
+  auto x_inputCoords2 = float2(x - var2 * dx, y);
+  auto x_inputCoords3 = float2(x + var2 * dx, y);
+  auto x_inputCoords4 = float2(x + var1 * dx, y);
 
   t0 = texSource.read(x_inputCoords1, texDesc)[0];
   t0 -= texSource.read(x_inputCoords2, texDesc)[0] * 8.0f;
@@ -87,17 +86,17 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   t1 -= texTarget.read(x_inputCoords4, texDesc)[0];
   t1 /= 12.0f;
 
-  Ix[pos] = (t0 + t1) ;//* 0.5f;                      //changed for unnormalization
+  Ix[pos] = (t0 + t1) * 0.5f;                      
 
   // t derivative
   auto inputCoord = float2(x, y);
   Iz[pos] = texTarget.read(inputCoord, texDesc)[0] - texSource.read(inputCoord, texDesc)[0];
 
   // y derivative
-  auto y_inputCoords1 = float2(x, y - var2 * dy);
-  auto y_inputCoords2 = float2(x, y - var3 * dy);
-  auto y_inputCoords3 = float2(x, y + var3 * dy);
-  auto y_inputCoords4 = float2(x, y + var2 * dy);
+  auto y_inputCoords1 = float2(x, y - var1 * dy);
+  auto y_inputCoords2 = float2(x, y - var2 * dy);
+  auto y_inputCoords3 = float2(x, y + var2 * dy);
+  auto y_inputCoords4 = float2(x, y + var1 * dy);
   
   t0 = texSource.read(y_inputCoords1, texDesc)[0];
   t0 -= texSource.read(y_inputCoords2, texDesc)[0] * 8.0f;
@@ -111,7 +110,7 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   t1 -= texTarget.read(y_inputCoords4, texDesc)[0];
   t1 /= 12.0f;
 
-  Iy[pos] = (t0 + t1);// * 0.5f;                   //changed for unnormalization
+  Iy[pos] = (t0 + t1) * 0.5f;                   
 }
 
 

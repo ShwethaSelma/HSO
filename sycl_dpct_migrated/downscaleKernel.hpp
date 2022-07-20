@@ -53,11 +53,11 @@ void DownscaleKernel(int width, int height, int stride, float *out,
     return;
   }
 
-  float x = ((float)ix);
-  float y = ((float)iy);
+  float x = ((float)ix + 0.5f);
+  float y = ((float)iy + 0.5f);
 
   out[ix + iy * stride] =
-      (texFine.read(x, y)[0] + texFine.read(x, y)[0] +
+     0.25f * (texFine.read(x, y)[0] + texFine.read(x, y)[0] +
        texFine.read(x, y)[0] + texFine.read(x, y)[0]);
 
 }

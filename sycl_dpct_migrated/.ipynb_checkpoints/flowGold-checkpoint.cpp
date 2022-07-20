@@ -130,7 +130,7 @@ static void Downscale(const float *src, int width, int height, int stride,
       sum += Tex2Di(src, width, height, stride, srcX + 1, srcY + 0);
       sum += Tex2Di(src, width, height, stride, srcX + 1, srcY + 1);
       // normalize
-      sum *= 1;//0.25f;
+      sum *= 0.25f;
       out[j + i * newStride] = sum;
     }
   }
@@ -224,7 +224,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
       t1 /= 12.0f;
 
       // spatial derivatives are averaged
-      Ix[pos] = (t0 + t1);// * 0.5f;
+      Ix[pos] = (t0 + t1) * 0.5f;
 
       // t derivative
       Iz[pos] = I1[pos] - I0[pos];
@@ -242,7 +242,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
       t1 -= Tex2Di(I1, w, h, s, j, i + 0);
       t1 /= 12.0f;
 
-      Iy[pos] = (t0 + t1);// * 0.5f;
+      Iy[pos] = (t0 + t1) * 0.5f;
     }
   }
 }
