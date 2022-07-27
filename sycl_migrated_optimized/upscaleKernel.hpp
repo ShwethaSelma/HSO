@@ -94,7 +94,7 @@ static void Upscale(const float *src, float *pI0_h, float *I0_h, float *src_p, i
     pI0_h[index * 4 + 1] = pI0_h[index * 4 + 2] = pI0_h[index * 4 + 3] = 0.f;
   }
   }
-  q.memcpy(src_p, pI0_h, dataSize * 4).wait();
+  q.memcpy(src_p, pI0_h, height * stride * sizeof(sycl::float4)).wait();
   
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
@@ -103,7 +103,7 @@ static void Upscale(const float *src, float *pI0_h, float *I0_h, float *src_p, i
   auto texCoarse = cl::sycl::image<2>(src_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(width, height), range<1>(stride * 4 * sizeof(float)));
+                                    range<2>(width, height), range<1>(stride * sizeof(sycl::float4)));
 
   q.submit([&](sycl::handler &cgh) {
     auto texCoarse_acc = texCoarse.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);

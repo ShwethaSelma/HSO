@@ -38,6 +38,8 @@
 
 #include <chrono>
 
+using namespace sycl;
+
 using Time = std::chrono::steady_clock;
 using ms = std::chrono::milliseconds;
 using float_ms = std::chrono::duration<float, ms::period>;
@@ -126,14 +128,14 @@ void ComputeFlowCUDA(const float *I0, const float *I1, int width, int height,
   *(pI1 + currentLevel) = (const float *)sycl::malloc_device(dataSize * 4, q);
   
   
-  float *pI0_h  = (float *)sycl::malloc_host(dataSize * 4, q);
+  float *pI0_h  = (float *)sycl::malloc_host(stride * height * sizeof(sycl::float4), q);
   float *I0_h   = (float *)sycl::malloc_host(dataSize, q);
   
-  float *pI1_h  = (float *)sycl::malloc_host(dataSize * 4, q);
+  float *pI1_h  = (float *)sycl::malloc_host(stride * height * sizeof(sycl::float4), q);
   float *I1_h   = (float *)sycl::malloc_host(dataSize, q);
   
-  float *src_d0  = (float *)sycl::malloc_device(dataSize * 4, q);
-  float *src_d1  = (float *)sycl::malloc_device(dataSize * 4, q);
+  float *src_d0  = (float *)sycl::malloc_device(stride * height * sizeof(sycl::float4), q);
+  float *src_d1  = (float *)sycl::malloc_device(stride * height * sizeof(sycl::float4), q);
   
   q.memcpy((void *)I0_h, I0, dataSize);
   q.memcpy((void *)I1_h, I1, dataSize);
@@ -152,8 +154,8 @@ void ComputeFlowCUDA(const float *I0, const float *I1, int width, int height,
     int nh = pH[currentLevel] / 2;
     int ns = iAlignUp(nw);
 
-    *(pI0 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * 4 * sizeof(float), q);
-    *(pI1 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * 4 * sizeof(float), q);
+    *(pI0 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(sycl::float4), q);
+    *(pI1 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(sycl::float4), q);
     
     Downscale(pI0[currentLevel], pI0_h, I0_h, src_d0, pW[currentLevel], pH[currentLevel],
               pS[currentLevel], nw, nh, ns, (float *)pI0[currentLevel - 1], q);

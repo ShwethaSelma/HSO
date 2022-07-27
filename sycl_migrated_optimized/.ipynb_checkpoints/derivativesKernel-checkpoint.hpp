@@ -151,8 +151,8 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
     pI1_h[index * 4 + 1] = pI1_h[index * 4 + 2] = pI1_h[index * 4 + 3] = 0.f;
   }
    }
-   q.memcpy(src_d0, pI0_h, dataSize * 4).wait();
-   q.memcpy(src_d1, pI1_h, dataSize * 4).wait();
+   q.memcpy(src_d0, pI0_h, s * h * sizeof(sycl::float4)).wait();
+   q.memcpy(src_d1, pI1_h, s * h * sizeof(sycl::float4)).wait();
   
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
@@ -161,12 +161,12 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
   auto texSource = cl::sycl::image<2>(src_d0, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * 4 * sizeof(float)));
+                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
   auto texTarget = cl::sycl::image<2>(src_d1, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * 4 * sizeof(float)));
+                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
   q.submit([&](sycl::handler &cgh) {
     
