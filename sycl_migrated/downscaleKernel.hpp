@@ -96,7 +96,7 @@ static void Downscale(const float *src, int width, int height, int stride,
   float *src_h = (float *)malloc(dataSize);
   q.memcpy(src_h, src, dataSize).wait();
   
-  float *src_p = (float *)sycl::malloc_shared(4 * dataSize, q);
+  float *src_p = (float *)sycl::malloc_shared(height * stride * sizeof(sycl::float4), q);
   for (int i=0; i < 4 * height * stride; i++)
     src_p[i] = 0.f;
   
@@ -115,7 +115,7 @@ static void Downscale(const float *src, int width, int height, int stride,
   auto texFine = cl::sycl::image<2>(src_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(width, height), range<1>(stride * 4 * sizeof(float)));
+                                    range<2>(width, height), range<1>(stride * sizeof(sycl::float4)));
   
   q.submit([&](sycl::handler &cgh) {
     auto tex_acc = texFine.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);

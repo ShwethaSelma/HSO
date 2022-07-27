@@ -139,7 +139,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   q.memcpy(I0_h, I0, dataSize).wait();
   q.memcpy(I1_h, I1, dataSize).wait();
   
-  float *I0_p = (float *)sycl::malloc_shared(4 * dataSize, q);
+  float *I0_p = (float *)sycl::malloc_shared(h * s * sizeof(sycl::float4), q);
   for (int i=0; i < h; i++) {
     for (int j = 0; j< w; j++){
       int index = i * s + j;
@@ -148,7 +148,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   }
   }
   
-  float *I1_p = (float *)sycl::malloc_shared(4 * dataSize, q);
+  float *I1_p = (float *)sycl::malloc_shared(h * s * sizeof(sycl::float4), q);
    for (int i=0; i < h; i++) {
     for (int j = 0; j< w; j++){
       int index = i * s + j;
@@ -164,12 +164,12 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
   auto texSource = cl::sycl::image<2>(I0_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * 4 * sizeof(float)));
+                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
   auto texTarget = cl::sycl::image<2>(I1_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * 4 * sizeof(float)));
+                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
   q.submit([&](sycl::handler &cgh) {
     

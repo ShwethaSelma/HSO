@@ -92,7 +92,7 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
   float *src_h = (float *)malloc(dataSize);
   q.memcpy(src_h, src, dataSize).wait();
   
-  float *src_p = (float *)sycl::malloc_shared(4 * dataSize, q);
+  float *src_p = (float *)sycl::malloc_shared(h * s * sizeof(sycl::float4), q);
   for (int i=0; i < h; i++) {
     for (int j = 0; j< w; j++){
       int index = i * s + j;
@@ -108,7 +108,7 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
   auto texToWarp = cl::sycl::image<2>(src_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * 4 * sizeof(float)));
+                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
  
   q.submit([&](sycl::handler &cgh) {
