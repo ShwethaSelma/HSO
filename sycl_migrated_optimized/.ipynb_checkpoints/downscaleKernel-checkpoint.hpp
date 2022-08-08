@@ -28,18 +28,13 @@
 #include <CL/sycl.hpp>
 #include <iostream>
 #include "common.h"
-#include <chrono>
-
-using Time = std::chrono::steady_clock;
-using ms = std::chrono::milliseconds;
-using float_ms = std::chrono::duration<float, ms::period>;
 
 using namespace sycl;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief downscale image
 ///
-/// CUDA kernel, relies heavily on texture unit
+/// SYCL kernel, relies heavily on texture unit
 /// \param[in]  width   image width
 /// \param[in]  height  image height
 /// \param[in]  stride  image stride
@@ -108,17 +103,8 @@ static void Downscale(const float *src, float *pI0_h, float *I0_h, float *src_p,
       pI0_h[index * 4 + 1] = pI0_h[index * 4 + 2] = pI0_h[index * 4 + 3] = 0.f;
     }
   }
-  
-//    printf("\n Height: %d Width: %d Stride: %d\n",height, width, stride);
-//    printf("\nSRC_IN: \n");
-//     for (int i=0; i < 10; i++) {
-//       for (int j=0; j < 10; j++) {// newWidth // newStride
-//         printf("%f ", pI0_h[(i * stride + j) * 4]);
-//       }
-//       printf("\n");
-//     }
-  
-  q.memcpy(src_p, pI0_h, dataSize * 4).wait();
+    
+  q.memcpy(src_p, pI0_h, height * width * sizeof(sycl::float4)).wait();
 
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 
@@ -127,7 +113,7 @@ static void Downscale(const float *src, float *pI0_h, float *I0_h, float *src_p,
   auto texFine = cl::sycl::image<2>(src_p, 
                                     cl::sycl::image_channel_order::rgba, 
                                     cl::sycl::image_channel_type::fp32, 
-                                    range<2>(width, height), range<1>(stride * 4 * sizeof(float)));
+                                    range<2>(width, height), range<1>(stride * sizeof(sycl::float4)));
   
   
   q.submit([&](sycl::handler &cgh) {

@@ -31,7 +31,7 @@
 using namespace sycl;
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief one iteration of classical Horn-Schunck method, CUDA kernel.
+/// \brief one iteration of classical Horn-Schunck method, SYCL kernel.
 ///
 /// It is one iteration of Jacobi method for a corresponding linear system.
 /// Template parameters are describe CTA size
@@ -157,7 +157,7 @@ void JacobiIteration(const float *du0, const float *dv0,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief one iteration of classical Horn-Schunck method, CUDA kernel wrapper.
+/// \brief one iteration of classical Horn-Schunck method, SYCL kernel wrapper.
 ///
 /// It is one iteration of Jacobi method for a corresponding linear system.
 /// \param[in]  du0     current horizontal displacement approximation

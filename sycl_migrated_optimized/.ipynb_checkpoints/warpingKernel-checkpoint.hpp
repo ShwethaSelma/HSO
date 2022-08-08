@@ -31,7 +31,7 @@
 using namespace sycl;
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief warp image with a given displacement field, CUDA kernel.
+/// \brief warp image with a given displacement field, SYCL kernel.
 /// \param[in]  width   image width
 /// \param[in]  height  image height
 /// \param[in]  stride  image stride
@@ -61,7 +61,7 @@ void WarpingKernel(int width, int height, int stride, const float *u,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief warp image with provided vector field, CUDA kernel wrapper.
+/// \brief warp image with provided vector field, SYCL kernel wrapper.
 ///
 /// For each output pixel there is a vector which tells which pixel
 /// from a source image should be mapped to this particular output
