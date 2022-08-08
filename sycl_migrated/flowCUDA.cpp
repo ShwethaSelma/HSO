@@ -52,7 +52,7 @@
 /// \param[out] u            horizontal displacement
 /// \param[out] v            vertical displacement
 ///////////////////////////////////////////////////////////////////////////////
-void ComputeFlowCUDA(const float *I0, const float *I1, int width, int height,
+void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
                      int stride, float alpha, int nLevels, int nWarpIters,
                      int nSolverIters, float *u, float *v) {
 

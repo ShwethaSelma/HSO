@@ -25,10 +25,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef FLOW_CUDA_H
-#define FLOW_CUDA_H
+#ifndef FLOW_SYCL_H
+#define FLOW_SYCL_H
 
-void ComputeFlowCUDA(
+void ComputeFlowSYCL(
     const float *I0,   // source frame
     const float *I1,   // tracked frame
     int width,         // frame width

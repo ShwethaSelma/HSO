@@ -31,7 +31,7 @@
 using namespace sycl;
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief upscale one component of a displacement field, CUDA kernel
+/// \brief upscale one component of a displacement field, SYCL kernel
 /// \param[in]  width   field width
 /// \param[in]  height  field height
 /// \param[in]  stride  field stride

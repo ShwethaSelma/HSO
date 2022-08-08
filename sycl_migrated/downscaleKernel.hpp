@@ -34,7 +34,7 @@ using namespace sycl;
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief downscale image
 ///
-/// CUDA kernel, relies heavily on texture unit
+/// SYCL kernel, relies heavily on texture unit
 /// \param[in]  width   image width
 /// \param[in]  height  image height
 /// \param[in]  stride  image stride
