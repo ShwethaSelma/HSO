@@ -34,7 +34,7 @@ using namespace sycl;
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief add two vectors of size _count_
 ///
-/// CUDA kernel
+/// SYCL kernel
 /// \param[in]  op1   term one
 /// \param[in]  op2   term two
 /// \param[in]  count vector size

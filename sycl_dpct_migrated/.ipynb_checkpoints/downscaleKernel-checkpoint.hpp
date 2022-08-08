@@ -35,7 +35,7 @@ using namespace sycl;
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief downscale image
 ///
-/// CUDA kernel, relies heavily on texture unit
+/// SYCL kernel, relies heavily on texture unit
 /// \param[in]  width   image width
 /// \param[in]  height  image height
 /// \param[in]  stride  image stride
@@ -43,7 +43,7 @@ using namespace sycl;
 ///////////////////////////////////////////////////////////////////////////////
 void DownscaleKernel(int width, int height, int stride, float *out,
                     dpct::image_accessor_ext<cl::sycl::float4, 2> texFine,
-                     sycl::nd_item<3> item_ct1, stream stream_ct1) {
+                     sycl::nd_item<3> item_ct1) {
   const int ix = item_ct1.get_local_id(2) +
                  item_ct1.get_group(2) * item_ct1.get_local_range(2);
   const int iy = item_ct1.get_local_id(1) +
@@ -127,14 +127,13 @@ static void Downscale(const float *src, int width, int height, int stride,
         static_cast<dpct::image_wrapper<sycl::float4, 2> *>(texFine)->get_access(cgh);
 
     auto texFine_smpl = texFine->get_sampler();
-     stream stream_ct1(128 * 1024, 256, cgh);
     
     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
                      [=](sycl::nd_item<3> item_ct1) {
                        DownscaleKernel(newWidth, newHeight, newStride, out,
                                        dpct::image_accessor_ext<cl::sycl::float4, 2>(
                                            texFine_smpl, texFine_acc),
-                                       item_ct1, stream_ct1);
+                                       item_ct1);
                      });
   }).wait();
 }

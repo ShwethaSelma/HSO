@@ -34,7 +34,7 @@ const float THRESHOLD = 0.05f;
 
 #include "common.h"
 #include "flowGold.h"
-#include "flowCUDA.h"
+#include "flowSYCL.h"
 
 #include <helper_functions.h>
 #include <cmath>
@@ -220,22 +220,22 @@ int main(int argc, char **argv) {
   auto stopGoldTime = Time::now();
   
    // start Device Timer
-  auto startCUDATime = Time::now();
-  ComputeFlowCUDA(h_source, h_target, width, height, stride, alpha, nLevels,
+  auto startSYCLTime = Time::now();
+  ComputeFlowSYCL(h_source, h_target, width, height, stride, alpha, nLevels,
                   nWarpIters, nSolverIters, h_u, h_v);
   
   // stop Device Timer
-  auto stopCUDATime = Time::now();
+  auto stopSYCLTime = Time::now();
   
   auto Gold_duration =
       std::chrono::duration_cast<float_ms>(stopGoldTime - startGoldTime)
           .count();
   printf("Processing time on CPU: %f (ms)\n", Gold_duration);
   
-  auto CUDA_duration =
-      std::chrono::duration_cast<float_ms>(stopCUDATime - startCUDATime)
+  auto SYCL_duration =
+      std::chrono::duration_cast<float_ms>(stopSYCLTime - startSYCLTime)
           .count();
-  printf("Processing time on GPU: %f (ms)\n", CUDA_duration);
+  printf("Processing time on GPU: %f (ms)\n", SYCL_duration);
 
   // compare results (L1 norm)
   bool status =
