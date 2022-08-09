@@ -133,8 +133,11 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
   
   int dataSize = s * h * sizeof(float);
-  q.memcpy(I0_h, I0, dataSize).wait();
-  q.memcpy(I1_h, I1, dataSize).wait();
+  
+  q.memcpy(I0_h, I0, dataSize);
+  q.memcpy(I1_h, I1, dataSize);
+  
+  q.wait();
   
   for (int i=0; i < h; i++) {
     for (int j = 0; j< w; j++){
@@ -151,8 +154,10 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
     pI1_h[index * 4 + 1] = pI1_h[index * 4 + 2] = pI1_h[index * 4 + 3] = 0.f;
   }
    }
-   q.memcpy(src_d0, pI0_h, s * h * sizeof(sycl::float4)).wait();
-   q.memcpy(src_d1, pI1_h, s * h * sizeof(sycl::float4)).wait();
+   q.memcpy(src_d0, pI0_h, s * h * sizeof(sycl::float4));
+   q.memcpy(src_d1, pI1_h, s * h * sizeof(sycl::float4));
+  
+  q.wait();
   
   auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
                                     sycl::addressing_mode::mirrored_repeat, 

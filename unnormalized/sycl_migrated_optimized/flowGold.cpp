@@ -46,6 +46,9 @@
 inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
   // integer parts in floating point format
   float intPartX, intPartY;
+  
+  x -= 0.5f;
+  y -= 0.5f;
 
   // get fractional parts of coordinates
   float dx = fabsf(modff(x, &intPartX));

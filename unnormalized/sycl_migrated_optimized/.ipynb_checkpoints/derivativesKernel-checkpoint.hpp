@@ -54,19 +54,13 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   const int pos = ix + iy * stride;
 
   if (ix >= width || iy >= height) return;
-
-  float dx = 1.0f / (float)width;
-  float dy = 1.0f / (float)height;
-
-  float x = ((float)ix + 0.5f) * dx;
-  float y = ((float)iy + 0.5f) * dy;
-
+  
   float t0, t1;
-  // x derivative
-  auto x_inputCoords1 = float2(x - 2.0f * dx, y);
-  auto x_inputCoords2 = float2(x - 1.0f * dx, y);
-  auto x_inputCoords3 = float2(x + 1.0f * dx, y);
-  auto x_inputCoords4 = float2(x + 2.0f * dx, y);
+  
+  auto x_inputCoords1 = float2(ix - 2.0f, iy);
+  auto x_inputCoords2 = float2(ix - 1.0f, iy);
+  auto x_inputCoords3 = float2(ix + 1.0f, iy);
+  auto x_inputCoords4 = float2(ix + 2.0f, iy);
 
   t0 = texSource.read(x_inputCoords1, texDesc)[0];
   t0 -= texSource.read(x_inputCoords2, texDesc)[0] * 8.0f;
@@ -83,14 +77,14 @@ void ComputeDerivativesKernel(int width, int height, int stride, float *Ix,
   Ix[pos] = (t0 + t1) * 0.5f;
 
   // t derivative
-  auto inputCoord = float2(x, y);
+  auto inputCoord = float2(ix, iy);
   Iz[pos] = texTarget.read(inputCoord, texDesc)[0] - texSource.read(inputCoord, texDesc)[0];
 
   // y derivative
-  auto y_inputCoords1 = float2(x, y - 2.0f * dy);
-  auto y_inputCoords2 = float2(x, y - 1.0f * dy);
-  auto y_inputCoords3 = float2(x, y + 1.0f * dy);
-  auto y_inputCoords4 = float2(x, y + 2.0f * dy);
+  auto y_inputCoords1 = float2(ix, iy - 2.0f);
+  auto y_inputCoords2 = float2(ix, iy - 1.0f);
+  auto y_inputCoords3 = float2(ix, iy + 1.0f);
+  auto y_inputCoords4 = float2(ix, iy + 2.0f);
   
   t0 = texSource.read(y_inputCoords1, texDesc)[0];
   t0 -= texSource.read(y_inputCoords2, texDesc)[0] * 8.0f;
@@ -132,7 +126,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
   }
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
   
-  int dataSize = s * h * sizeof(float);
+   int dataSize = s * h * sizeof(float);
   
   q.memcpy(I0_h, I0, dataSize);
   q.memcpy(I1_h, I1, dataSize);
@@ -159,9 +153,9 @@ static void ComputeDerivatives(const float *I0, const float *I1, float *pI0_h, f
   
   q.wait();
   
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::normalized, 
-                                    sycl::addressing_mode::mirrored_repeat, 
-                                    sycl::filtering_mode::linear);
+  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
+                                    sycl::addressing_mode::clamp_to_edge, 
+                                    sycl::filtering_mode::nearest);  
   
   auto texSource = cl::sycl::image<2>(src_d0, 
                                     cl::sycl::image_channel_order::rgba, 
