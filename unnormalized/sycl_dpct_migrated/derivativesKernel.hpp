@@ -26,6 +26,7 @@
  */
 
 #include <CL/sycl.hpp>
+#include <dpct/dpct.hpp>
 #include "common.h"
 
 using namespace sycl;
@@ -165,7 +166,7 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
                                     cl::sycl::image_channel_type::fp32, 
                                     range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
-  q.submit([&](sycl::handler &cgh) {
+  dpct::get_default_queue().submit([&](sycl::handler &cgh) {
     
     auto texSource_acc = texSource.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);
     auto texTarget_acc = texTarget.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);

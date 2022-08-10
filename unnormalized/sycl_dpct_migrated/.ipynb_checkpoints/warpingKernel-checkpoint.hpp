@@ -26,6 +26,7 @@
  */
 
 #include <CL/sycl.hpp>
+#include <dpct/dpct.hpp>
 #include "common.h"
 
 using namespace sycl;
@@ -110,7 +111,7 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
                                     range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
   
  
-  q.submit([&](sycl::handler &cgh) {
+  dpct::get_default_queue().submit([&](sycl::handler &cgh) {
      auto texToWarp_acc = texToWarp.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);
 
     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),

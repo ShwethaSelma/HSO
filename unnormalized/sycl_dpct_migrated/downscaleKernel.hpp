@@ -26,6 +26,7 @@
  */
 
 #include <CL/sycl.hpp>
+#include <dpct/dpct.hpp>
 #include <iostream>
 #include "common.h"
 
@@ -114,7 +115,7 @@ static void Downscale(const float *src, int width, int height, int stride,
                                     range<2>(width, height), range<1>(stride * sizeof(sycl::float4)));
   
   
-  q.submit([&](sycl::handler &cgh) {
+  dpct::get_default_queue().submit([&](sycl::handler &cgh) {
     auto tex_acc = texFine.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);
     
     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),

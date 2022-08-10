@@ -26,6 +26,7 @@
  */
 
 #include <CL/sycl.hpp>
+#include <dpct/dpct.hpp>
 #include "common.h"
 
 using namespace sycl;
@@ -105,7 +106,7 @@ static void Upscale(const float *src, int width, int height, int stride,
                                     cl::sycl::image_channel_type::fp32, 
                                     range<2>(width, height), range<1>(stride * sizeof(sycl::float4)));
 
-  q.submit([&](sycl::handler &cgh) {
+  dpct::get_default_queue().submit([&](sycl::handler &cgh) {
     auto texCoarse_acc = texCoarse.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);
 
     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
