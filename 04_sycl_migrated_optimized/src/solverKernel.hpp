@@ -61,7 +61,6 @@ void JacobiIteration(const float *du0, const float *dv0,
                                 sycl::nd_item<3> item_ct1, volatile float *du,
                                 volatile float *dv) {
   // Handle to thread block group
-  auto cta = item_ct1.get_group();
 
   const int ix = item_ct1.get_local_id(2) +
                  item_ct1.get_group(2) * item_ct1.get_local_range().get(2);
