@@ -65,16 +65,7 @@ inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
   int ix0 = (int)intPartX;
   int iy0 = (int)intPartY;
 
-  // mirror out-of-range position
-//   if (ix0 < 0) ix0 = abs(ix0 + 1);
-
-//   if (iy0 < 0) iy0 = abs(iy0 + 1);
-
-//   if (ix0 >= w) ix0 = w * 2 - ix0 - 1;
-
-//   if (iy0 >= h) iy0 = h * 2 - iy0 - 1;
-
-  
+  // mirror out-of-range position  
    if (ix0 < 0) ix0 = 0;
 
    if (iy0 < 0) iy0 = 0;
@@ -87,9 +78,6 @@ inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
   int ix1 = ix0 + 1;
   int iy1 = iy0 + 1;
 
-//   if (ix1 >= w) ix1 = w * 2 - ix1 - 1;
-
-//   if (iy1 >= h) iy1 = h * 2 - iy1 - 1;
   if (ix1 >= w) ix1 = w - 1;
 
   if (iy1 >= h) iy1 = h - 1;
@@ -116,13 +104,6 @@ inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
 /// \return fetched value
 ///////////////////////////////////////////////////////////////////////////////
 inline float Tex2Di(const float *src, int w, int h, int s, int x, int y) {
-//   if (x < 0) x = abs(x + 1);
-
-//   if (y < 0) y = abs(y + 1);
-
-//   if (x >= w) x = w * 2 - x - 1;
-
-//   if (y >= h) y = h * 2 - y - 1;
 
   if (x < 0) x = 0;
 
