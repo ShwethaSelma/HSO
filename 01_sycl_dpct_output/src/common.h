@@ -42,13 +42,12 @@
 // Common includes
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <memory.h>
-#include <math.h>
-
 #include <helper_cuda.h>
+#include <math.h>
+#include <memory.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Common constants

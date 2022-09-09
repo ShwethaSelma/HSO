@@ -31,11 +31,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <CL/sycl.hpp>
-#include <dpct/dpct.hpp>
-#include "common.h"
 #include "flowGold.h"
+
+#include <CL/sycl.hpp>
 #include <cmath>
+#include <dpct/dpct.hpp>
+
+#include "common.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief host texture fetch

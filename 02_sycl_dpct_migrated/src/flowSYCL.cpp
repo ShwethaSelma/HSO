@@ -30,19 +30,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <iostream>
 #include <CL/sycl.hpp>
 #include <dpct/dpct.hpp>
+#include <iostream>
+
 #include "common.h"
 
 // include kernels
+#include "addKernel.hpp"
+#include "derivativesKernel.hpp"
 #include "downscaleKernel.hpp"
+#include "solverKernel.hpp"
 #include "upscaleKernel.hpp"
 #include "warpingKernel.hpp"
-#include "derivativesKernel.hpp"
-#include "solverKernel.hpp"
-#include "addKernel.hpp"
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief method logic
@@ -63,22 +63,20 @@
 void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
                      int stride, float alpha, int nLevels, int nWarpIters,
                      int nSolverIters, float *u, float *v) {
-  
   auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const& e : exceptions) {
-            try {
-                std::rethrow_exception(e);
-            }
-            catch (exception const& e) {
-                std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
-                          << e.what() << std::endl;
-            }
-        }
-    };
+    for (std::exception_ptr const &e : exceptions) {
+      try {
+        std::rethrow_exception(e);
+      } catch (exception const &e) {
+        std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
+                  << e.what() << std::endl;
+      }
+    }
+  };
 
   dpct::device_ext &dev_ct1 = dpct::get_current_device();
   sycl::queue &q_ct1 = dev_ct1.default_queue();
-  
+
   printf("Computing optical flow on GPU...\n");
   std::cout << "\nRunning on "
             << q_ct1.get_device().get_info<sycl::info::device::name>() << "\n";
@@ -114,13 +112,13 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
   d_dv0 = (float *)sycl::malloc_device(dataSize, q_ct1);
   d_du1 = (float *)sycl::malloc_device(dataSize, q_ct1);
   d_dv1 = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_Ix  = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_Iy  = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_Iz  = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_u   = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_v   = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_nu  = (float *)sycl::malloc_device(dataSize, q_ct1);
-  d_nv  = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_Ix = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_Iy = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_Iz = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_u = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_v = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_nu = (float *)sycl::malloc_device(dataSize, q_ct1);
+  d_nv = (float *)sycl::malloc_device(dataSize, q_ct1);
 
   // prepare pyramid
 
@@ -135,31 +133,35 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
   pW[currentLevel] = width;
   pH[currentLevel] = height;
   pS[currentLevel] = stride;
-  
+
   for (; currentLevel > 0; --currentLevel) {
     int nw = pW[currentLevel] / 2;
     int nh = pH[currentLevel] / 2;
     int ns = iAlignUp(nw);
 
-    *(pI0 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q_ct1);
-    *(pI1 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q_ct1);
-    
+    *(pI0 + currentLevel - 1) =
+        (const float *)sycl::malloc_device(ns * nh * sizeof(float), q_ct1);
+    *(pI1 + currentLevel - 1) =
+        (const float *)sycl::malloc_device(ns * nh * sizeof(float), q_ct1);
+
     Downscale(pI0[currentLevel], pW[currentLevel], pH[currentLevel],
-              pS[currentLevel], nw, nh, ns, (float *)pI0[currentLevel - 1], q_ct1);
+              pS[currentLevel], nw, nh, ns, (float *)pI0[currentLevel - 1],
+              q_ct1);
 
     Downscale(pI1[currentLevel], pW[currentLevel], pH[currentLevel],
-              pS[currentLevel], nw, nh, ns, (float *)pI1[currentLevel - 1], q_ct1);
+              pS[currentLevel], nw, nh, ns, (float *)pI1[currentLevel - 1],
+              q_ct1);
     q_ct1.wait();
 
     pW[currentLevel - 1] = nw;
     pH[currentLevel - 1] = nh;
     pS[currentLevel - 1] = ns;
   }
-  
+
   q_ct1.memset(d_u, 0, stride * height * sizeof(float)).wait();
   q_ct1.memset(d_v, 0, stride * height * sizeof(float)).wait();
-  
-  // compute flow 
+
+  // compute flow
   for (; currentLevel < nLevels; ++currentLevel) {
     for (int warpIter = 0; warpIter < nWarpIters; ++warpIter) {
       q_ct1.memset(d_du0, 0, dataSize).wait();
@@ -172,13 +174,15 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
       // between frame 0 and warped frame 1
       WarpImage(pI1[currentLevel], pW[currentLevel], pH[currentLevel],
                 pS[currentLevel], d_u, d_v, d_tmp, q_ct1);
-      
+
       ComputeDerivatives(pI0[currentLevel], d_tmp, pW[currentLevel],
-                         pH[currentLevel], pS[currentLevel], d_Ix, d_Iy, d_Iz, q_ct1);
-      
+                         pH[currentLevel], pS[currentLevel], d_Ix, d_Iy, d_Iz,
+                         q_ct1);
+
       for (int iter = 0; iter < nSolverIters; ++iter) {
         SolveForUpdate(d_du0, d_dv0, d_Ix, d_Iy, d_Iz, pW[currentLevel],
-                       pH[currentLevel], pS[currentLevel], alpha, d_du1, d_dv1, q_ct1);
+                       pH[currentLevel], pS[currentLevel], alpha, d_du1, d_dv1,
+                       q_ct1);
 
         Swap(d_du0, d_du1);
         Swap(d_dv0, d_dv1);
@@ -192,22 +196,22 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
     if (currentLevel != nLevels - 1) {
       // prolongate solution
       float scaleX = (float)pW[currentLevel + 1] / (float)pW[currentLevel];
-      
+
       Upscale(d_u, pW[currentLevel], pH[currentLevel], pS[currentLevel],
               pW[currentLevel + 1], pH[currentLevel + 1], pS[currentLevel + 1],
               scaleX, d_nu, q_ct1);
-      
+
       float scaleY = (float)pH[currentLevel + 1] / (float)pH[currentLevel];
 
       Upscale(d_v, pW[currentLevel], pH[currentLevel], pS[currentLevel],
               pW[currentLevel + 1], pH[currentLevel + 1], pS[currentLevel + 1],
               scaleY, d_nv, q_ct1);
-      
+
       Swap(d_u, d_nu);
       Swap(d_v, d_nv);
     }
   }
-  
+
   q_ct1.memcpy(u, d_u, dataSize).wait();
   q_ct1.memcpy(v, d_v, dataSize).wait();
 

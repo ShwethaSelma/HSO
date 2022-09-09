@@ -33,6 +33,7 @@
 
 #include <CL/sycl.hpp>
 #include <dpct/dpct.hpp>
+
 #include "common.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,12 +54,11 @@
 /// \param[out] dv1     new vertical displacement approximation
 ///////////////////////////////////////////////////////////////////////////////
 template <int bx, int by>
-void JacobiIteration(const float *du0, const float *dv0,
-                                const float *Ix, const float *Iy,
-                                const float *Iz, int w, int h, int s,
-                                float alpha, float *du1, float *dv1,
-                                sycl::nd_item<3> item_ct1, volatile float *du,
-                                volatile float *dv) {
+void JacobiIteration(const float *du0, const float *dv0, const float *Ix,
+                     const float *Iy, const float *Iz, int w, int h, int s,
+                     float alpha, float *du1, float *dv1,
+                     sycl::nd_item<3> item_ct1, volatile float *du,
+                     volatile float *dv) {
   // Handle to thread block group
   auto cta = item_ct1.get_group();
 

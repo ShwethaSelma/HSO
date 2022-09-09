@@ -33,6 +33,7 @@
 
 #include <CL/sycl.hpp>
 #include <dpct/dpct.hpp>
+
 #include "common.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,8 +45,8 @@
 /// \param[in]  count vector size
 /// \param[out] sum   result
 ///////////////////////////////////////////////////////////////////////////////
-void AddKernel(const float *op1, const float *op2, int count,
-                          float *sum, sycl::nd_item<3> item_ct1) {
+void AddKernel(const float *op1, const float *op2, int count, float *sum,
+               sycl::nd_item<3> item_ct1) {
   const int pos = item_ct1.get_local_id(2) +
                   item_ct1.get_group(2) * item_ct1.get_local_range(2);
 

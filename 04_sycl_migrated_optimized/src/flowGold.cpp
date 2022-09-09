@@ -31,10 +31,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <CL/sycl.hpp>
-#include "common.h"
 #include "flowGold.h"
+
+#include <CL/sycl.hpp>
 #include <cmath>
+
+#include "common.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief host texture fetch
@@ -52,7 +54,7 @@
 inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
   // integer parts in floating point format
   float intPartX, intPartY;
-  
+
   x -= 0.5f;
   y -= 0.5f;
 
@@ -65,14 +67,14 @@ inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
   int ix0 = (int)intPartX;
   int iy0 = (int)intPartY;
 
-  // mirror out-of-range position  
-   if (ix0 < 0) ix0 = 0;
+  // mirror out-of-range position
+  if (ix0 < 0) ix0 = 0;
 
-   if (iy0 < 0) iy0 = 0;
+  if (iy0 < 0) iy0 = 0;
 
-   if (ix0 >= w) ix0 = w - 1;
+  if (ix0 >= w) ix0 = w - 1;
 
-   if (iy0 >= h) iy0 = h - 1;
+  if (iy0 >= h) iy0 = h - 1;
 
   // corner which is opposite to (ix0, iy0)
   int ix1 = ix0 + 1;
@@ -104,7 +106,6 @@ inline float Tex2D(const float *t, int w, int h, int s, float x, float y) {
 /// \return fetched value
 ///////////////////////////////////////////////////////////////////////////////
 inline float Tex2Di(const float *src, int w, int h, int s, int x, int y) {
-
   if (x < 0) x = 0;
 
   if (y < 0) y = 0;
@@ -129,7 +130,6 @@ inline float Tex2Di(const float *src, int w, int h, int s, int x, int y) {
 ///////////////////////////////////////////////////////////////////////////////
 static void Downscale(const float *src, int width, int height, int stride,
                       int newWidth, int newHeight, int newStride, float *out) {
-
   for (int i = 0; i < newHeight; ++i) {
     for (int j = 0; j < newWidth; ++j) {
       const int srcX = j * 2;
@@ -162,7 +162,6 @@ static void Downscale(const float *src, int width, int height, int stride,
 static void Upscale(const float *src, int width, int height, int stride,
                     int newWidth, int newHeight, int newStride, float scale,
                     float *out) {
-
   for (int i = 0; i < newHeight; ++i) {
     for (int j = 0; j < newWidth; ++j) {
       // position within smaller image
@@ -192,7 +191,6 @@ static void Upscale(const float *src, int width, int height, int stride,
 ///////////////////////////////////////////////////////////////////////////////
 static void WarpImage(const float *src, int w, int h, int s, const float *u,
                       const float *v, float *out) {
-
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
       const int pos = j + i * s;
@@ -218,7 +216,6 @@ static void WarpImage(const float *src, int w, int h, int s, const float *u,
 ///////////////////////////////////////////////////////////////////////////////
 static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
                                int s, float *Ix, float *Iy, float *Iz) {
-   
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
       const int pos = j + i * s;
@@ -280,7 +277,6 @@ static void ComputeDerivatives(const float *I0, const float *I1, int w, int h,
 static void SolveForUpdate(const float *du0, const float *dv0, const float *Ix,
                            const float *Iy, const float *Iz, int w, int h,
                            int s, float alpha, float *du1, float *dv1) {
-
   for (int i = 0; i < h; ++i) {
     for (int j = 0; j < w; ++j) {
       const int pos = j + i * s;
@@ -412,13 +408,14 @@ void ComputeFlowGold(const float *I0, const float *I1, int width, int height,
                          pH[currentLevel], pS[currentLevel], Ix, Iy, Iz);
 
       for (int iter = 0; iter < nSolverIters; ++iter) {
-            //   printf("\ncurrentlevel = %d, warpiter = %d, Solver Iteration value = %d ",currentLevel, warpIter, iter);
+        //   printf("\ncurrentlevel = %d, warpiter = %d, Solver Iteration value
+        //   = %d ",currentLevel, warpIter, iter);
         SolveForUpdate(du0, dv0, Ix, Iy, Iz, pW[currentLevel], pH[currentLevel],
                        pS[currentLevel], alpha, du1, dv1);
         Swap(du0, du1);
         Swap(dv0, dv1);
       }
-      
+
       // update u, v
       for (int i = 0; i < pH[currentLevel] * pS[currentLevel]; ++i) {
         u[i] += du0[i];

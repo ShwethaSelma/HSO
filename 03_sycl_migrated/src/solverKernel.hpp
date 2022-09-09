@@ -32,6 +32,7 @@
  */
 
 #include <CL/sycl.hpp>
+
 #include "common.h"
 
 using namespace sycl;
@@ -54,12 +55,11 @@ using namespace sycl;
 /// \param[out] dv1     new vertical displacement approximation
 ///////////////////////////////////////////////////////////////////////////////
 template <int bx, int by>
-void JacobiIteration(const float *du0, const float *dv0,
-                                const float *Ix, const float *Iy,
-                                const float *Iz, int w, int h, int s,
-                                float alpha, float *du1, float *dv1,
-                                sycl::nd_item<3> item_ct1, volatile float *du,
-                                volatile float *dv) {
+void JacobiIteration(const float *du0, const float *dv0, const float *Ix,
+                     const float *Iy, const float *Iz, int w, int h, int s,
+                     float alpha, float *du1, float *dv1,
+                     sycl::nd_item<3> item_ct1, volatile float *du,
+                     volatile float *dv) {
   // Handle to thread block group
 
   const int ix = item_ct1.get_local_id(2) +
@@ -141,7 +141,7 @@ void JacobiIteration(const float *du0, const float *dv0,
   }
 
   group_barrier(item_ct1.get_group());
-  
+
   if (ix >= w || iy >= h) return;
 
   // now all necessary data are loaded to shared memory
@@ -179,34 +179,35 @@ void JacobiIteration(const float *du0, const float *dv0,
 ///////////////////////////////////////////////////////////////////////////////
 static void SolveForUpdate(const float *du0, const float *dv0, const float *Ix,
                            const float *Iy, const float *Iz, int w, int h,
-                           int s, float alpha, float *du1, float *dv1, queue q) {
+                           int s, float alpha, float *du1, float *dv1,
+                           queue q) {
   // CTA size
   sycl::range<3> threads(1, 6, 32);
-  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
-  if( max_wg_size < 6*32)
-  {
+  auto max_wg_size =
+      q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if (max_wg_size < 6 * 32) {
     threads[0] = 1;
     threads[2] = 32;
     threads[1] = max_wg_size / threads[2];
   }
-  
+
   // grid size
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
 
   q.submit([&](sycl::handler &cgh) {
-    sycl::accessor<float, 1, sycl::access_mode::read_write,
-                   sycl::access::target::local>
-        du_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);
-    sycl::accessor<float, 1, sycl::access_mode::read_write,
-                   sycl::access::target::local>
-        dv_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);
+     sycl::accessor<float, 1, sycl::access_mode::read_write,
+                    sycl::access::target::local>
+         du_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);
+     sycl::accessor<float, 1, sycl::access_mode::read_write,
+                    sycl::access::target::local>
+         dv_acc_ct1(sycl::range<1>((32 + 2) * (6 + 2)), cgh);
 
-    cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
-                     [=](sycl::nd_item<3> item_ct1) {
-                       JacobiIteration<32, 6>(du0, dv0, Ix, Iy, Iz, w, h, s,
-                                              alpha, du1, dv1, item_ct1,
-                                              du_acc_ct1.get_pointer(),
-                                              dv_acc_ct1.get_pointer());
-                     });
-  }).wait();
+     cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
+                      [=](sycl::nd_item<3> item_ct1) {
+                        JacobiIteration<32, 6>(du0, dv0, Ix, Iy, Iz, w, h, s,
+                                               alpha, du1, dv1, item_ct1,
+                                               du_acc_ct1.get_pointer(),
+                                               dv_acc_ct1.get_pointer());
+                      });
+   }).wait();
 }

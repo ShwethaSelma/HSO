@@ -33,6 +33,7 @@
 
 #include <CL/sycl.hpp>
 #include <dpct/dpct.hpp>
+
 #include "common.h"
 
 using namespace sycl;
@@ -48,8 +49,10 @@ using namespace sycl;
 ///////////////////////////////////////////////////////////////////////////////
 void WarpingKernel(int width, int height, int stride, const float *u,
                    const float *v, float *out,
-                   accessor<cl::sycl::float4, 2, cl::sycl::access::mode::read, sycl::access::target::image> texToWarp, cl::sycl::sampler texDesc,
-                   sycl::nd_item<3> item_ct1) {
+                   accessor<cl::sycl::float4, 2, cl::sycl::access::mode::read,
+                            sycl::access::target::image>
+                       texToWarp,
+                   cl::sycl::sampler texDesc, sycl::nd_item<3> item_ct1) {
   const int ix = item_ct1.get_local_id(2) +
                  item_ct1.get_group(2) * item_ct1.get_local_range().get(2);
   const int iy = item_ct1.get_local_id(1) +
@@ -58,10 +61,10 @@ void WarpingKernel(int width, int height, int stride, const float *u,
   const int pos = ix + iy * stride;
 
   if (ix >= width || iy >= height) return;
-  
+
   float x = ((float)ix + u[pos]);
   float y = ((float)iy + v[pos]);
-  
+
   auto inputCoord = float2(x, y);
 
   out[pos] = texToWarp.read(inputCoord, texDesc)[0];
@@ -86,45 +89,47 @@ void WarpingKernel(int width, int height, int stride, const float *u,
 static void WarpImage(const float *src, int w, int h, int s, const float *u,
                       const float *v, float *out, queue q) {
   sycl::range<3> threads(1, 6, 32);
-  auto max_wg_size = q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
-  if( max_wg_size < 6*32)
-  {
+  auto max_wg_size =
+      q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+  if (max_wg_size < 6 * 32) {
     threads[0] = 1;
     threads[2] = 32;
     threads[1] = max_wg_size / threads[2];
   }
   sycl::range<3> blocks(1, iDivUp(h, threads[1]), iDivUp(w, threads[2]));
-  
+
   int dataSize = s * h * sizeof(float);
   float *src_h = (float *)malloc(dataSize);
   q.memcpy(src_h, src, dataSize).wait();
-  
-  float *src_p = (float *)sycl::malloc_shared(h * s * sizeof(sycl::float4), q);
-  for (int i=0; i < h; i++) {
-    for (int j = 0; j< w; j++){
-      int index = i * s + j;
-    src_p[index * 4 + 0] = src_h[index];
-    src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
-  }
-  }
-  auto texDescr = cl::sycl::sampler(sycl::coordinate_normalization_mode::unnormalized, 
-                                    sycl::addressing_mode::clamp_to_edge, 
-                                    sycl::filtering_mode::linear);
-  
-  auto texToWarp = cl::sycl::image<2>(src_p, 
-                                    cl::sycl::image_channel_order::rgba, 
-                                    cl::sycl::image_channel_type::fp32, 
-                                    range<2>(w, h), range<1>(s * sizeof(sycl::float4)));
-  
- 
-  dpct::get_default_queue().submit([&](sycl::handler &cgh) {
-     auto texToWarp_acc = texToWarp.template get_access<cl::sycl::float4, cl::sycl::access::mode::read>(cgh);
 
-    cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
-                     [=](sycl::nd_item<3> item_ct1) {
-                       WarpingKernel(w, h, s, u, v, out,
-                                    texToWarp_acc, texDescr,
-                                     item_ct1);
-                     });
-  }).wait();
+  float *src_p = (float *)sycl::malloc_shared(h * s * sizeof(sycl::float4), q);
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+      int index = i * s + j;
+      src_p[index * 4 + 0] = src_h[index];
+      src_p[index * 4 + 1] = src_p[index * 4 + 2] = src_p[index * 4 + 3] = 0.f;
+    }
+  }
+  auto texDescr = cl::sycl::sampler(
+      sycl::coordinate_normalization_mode::unnormalized,
+      sycl::addressing_mode::clamp_to_edge, sycl::filtering_mode::linear);
+
+  auto texToWarp =
+      cl::sycl::image<2>(src_p, cl::sycl::image_channel_order::rgba,
+                         cl::sycl::image_channel_type::fp32, range<2>(w, h),
+                         range<1>(s * sizeof(sycl::float4)));
+
+  dpct::get_default_queue()
+      .submit([&](sycl::handler &cgh) {
+        auto texToWarp_acc =
+            texToWarp.template get_access<cl::sycl::float4,
+                                          cl::sycl::access::mode::read>(cgh);
+
+        cgh.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
+                         [=](sycl::nd_item<3> item_ct1) {
+                           WarpingKernel(w, h, s, u, v, out, texToWarp_acc,
+                                         texDescr, item_ct1);
+                         });
+      })
+      .wait();
 }

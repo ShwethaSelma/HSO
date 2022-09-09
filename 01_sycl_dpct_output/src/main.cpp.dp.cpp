@@ -36,15 +36,15 @@ const static char *const sSDKsample = "HSOpticalFlow";
 // CPU-GPU discrepancy threshold for self-test
 const float THRESHOLD = 0.05f;
 
+#include <helper_functions.h>
+
 #include <CL/sycl.hpp>
+#include <cmath>
 #include <dpct/dpct.hpp>
 
 #include "common.h"
-#include "flowGold.h"
 #include "flowCUDA.h"
-
-#include <helper_functions.h>
-#include <cmath>
+#include "flowGold.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief save optical flow in format described on vision.middlebury.edu/flow

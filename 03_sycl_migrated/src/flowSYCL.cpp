@@ -30,18 +30,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <iostream>
 #include <CL/sycl.hpp>
+#include <iostream>
+
 #include "common.h"
 
 // include kernels
+#include "addKernel.hpp"
+#include "derivativesKernel.hpp"
 #include "downscaleKernel.hpp"
+#include "solverKernel.hpp"
 #include "upscaleKernel.hpp"
 #include "warpingKernel.hpp"
-#include "derivativesKernel.hpp"
-#include "solverKernel.hpp"
-#include "addKernel.hpp"
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief method logic
@@ -62,22 +62,20 @@
 void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
                      int stride, float alpha, int nLevels, int nWarpIters,
                      int nSolverIters, float *u, float *v) {
-  
   auto exception_handler = [](exception_list exceptions) {
-        for (std::exception_ptr const& e : exceptions) {
-            try {
-                std::rethrow_exception(e);
-            }
-            catch (exception const& e) {
-                std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
-                          << e.what() << std::endl;
-            }
-        }
-    };
+    for (std::exception_ptr const &e : exceptions) {
+      try {
+        std::rethrow_exception(e);
+      } catch (exception const &e) {
+        std::cout << "Caught asynchronous SYCL exception during ASUM:\n"
+                  << e.what() << std::endl;
+      }
+    }
+  };
 
   queue q{default_selector(), exception_handler, property::queue::in_order()};
   printf("Computing optical flow on GPU...\n");
-   std::cout << "\nRunning on "
+  std::cout << "\nRunning on "
             << q.get_device().get_info<sycl::info::device::name>() << "\n";
 
   // pI0 and pI1 will hold device pointers
@@ -111,13 +109,13 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
   d_dv0 = (float *)sycl::malloc_device(dataSize, q);
   d_du1 = (float *)sycl::malloc_device(dataSize, q);
   d_dv1 = (float *)sycl::malloc_device(dataSize, q);
-  d_Ix  = (float *)sycl::malloc_device(dataSize, q);
-  d_Iy  = (float *)sycl::malloc_device(dataSize, q);
-  d_Iz  = (float *)sycl::malloc_device(dataSize, q);
-  d_u   = (float *)sycl::malloc_device(dataSize, q);
-  d_v   = (float *)sycl::malloc_device(dataSize, q);
-  d_nu  = (float *)sycl::malloc_device(dataSize, q);
-  d_nv  = (float *)sycl::malloc_device(dataSize, q);
+  d_Ix = (float *)sycl::malloc_device(dataSize, q);
+  d_Iy = (float *)sycl::malloc_device(dataSize, q);
+  d_Iz = (float *)sycl::malloc_device(dataSize, q);
+  d_u = (float *)sycl::malloc_device(dataSize, q);
+  d_v = (float *)sycl::malloc_device(dataSize, q);
+  d_nu = (float *)sycl::malloc_device(dataSize, q);
+  d_nv = (float *)sycl::malloc_device(dataSize, q);
 
   // prepare pyramid
 
@@ -132,15 +130,17 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
   pW[currentLevel] = width;
   pH[currentLevel] = height;
   pS[currentLevel] = stride;
-  
+
   for (; currentLevel > 0; --currentLevel) {
     int nw = pW[currentLevel] / 2;
     int nh = pH[currentLevel] / 2;
     int ns = iAlignUp(nw);
 
-    *(pI0 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
-    *(pI1 + currentLevel - 1) = (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
-    
+    *(pI0 + currentLevel - 1) =
+        (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
+    *(pI1 + currentLevel - 1) =
+        (const float *)sycl::malloc_device(ns * nh * sizeof(float), q);
+
     Downscale(pI0[currentLevel], pW[currentLevel], pH[currentLevel],
               pS[currentLevel], nw, nh, ns, (float *)pI0[currentLevel - 1], q);
 
@@ -152,11 +152,11 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
     pH[currentLevel - 1] = nh;
     pS[currentLevel - 1] = ns;
   }
-  
+
   q.memset(d_u, 0, stride * height * sizeof(float)).wait();
   q.memset(d_v, 0, stride * height * sizeof(float)).wait();
-  
-  // compute flow 
+
+  // compute flow
   for (; currentLevel < nLevels; ++currentLevel) {
     for (int warpIter = 0; warpIter < nWarpIters; ++warpIter) {
       q.memset(d_du0, 0, dataSize).wait();
@@ -169,13 +169,15 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
       // between frame 0 and warped frame 1
       WarpImage(pI1[currentLevel], pW[currentLevel], pH[currentLevel],
                 pS[currentLevel], d_u, d_v, d_tmp, q);
-      
+
       ComputeDerivatives(pI0[currentLevel], d_tmp, pW[currentLevel],
-                         pH[currentLevel], pS[currentLevel], d_Ix, d_Iy, d_Iz, q);
-      
+                         pH[currentLevel], pS[currentLevel], d_Ix, d_Iy, d_Iz,
+                         q);
+
       for (int iter = 0; iter < nSolverIters; ++iter) {
         SolveForUpdate(d_du0, d_dv0, d_Ix, d_Iy, d_Iz, pW[currentLevel],
-                       pH[currentLevel], pS[currentLevel], alpha, d_du1, d_dv1, q);
+                       pH[currentLevel], pS[currentLevel], alpha, d_du1, d_dv1,
+                       q);
 
         Swap(d_du0, d_du1);
         Swap(d_dv0, d_dv1);
@@ -189,22 +191,22 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
     if (currentLevel != nLevels - 1) {
       // prolongate solution
       float scaleX = (float)pW[currentLevel + 1] / (float)pW[currentLevel];
-      
+
       Upscale(d_u, pW[currentLevel], pH[currentLevel], pS[currentLevel],
               pW[currentLevel + 1], pH[currentLevel + 1], pS[currentLevel + 1],
               scaleX, d_nu, q);
-      
+
       float scaleY = (float)pH[currentLevel + 1] / (float)pH[currentLevel];
 
       Upscale(d_v, pW[currentLevel], pH[currentLevel], pS[currentLevel],
               pW[currentLevel + 1], pH[currentLevel + 1], pS[currentLevel + 1],
               scaleY, d_nv, q);
-      
+
       Swap(d_u, d_nu);
       Swap(d_v, d_nv);
     }
   }
-  
+
   q.memcpy(u, d_u, dataSize).wait();
   q.memcpy(v, d_v, dataSize).wait();
 

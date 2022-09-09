@@ -42,13 +42,12 @@
 // Common includes
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <memory.h>
-#include <math.h>
-
 #include <helper_cuda.h>
+#include <math.h>
+#include <memory.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Common constants
@@ -61,7 +60,7 @@ const int StrideAlignment = 8;
 
 // Align up n to the nearest multiple of m
 inline int iAlignUp(int n, int m = StrideAlignment) {
-  //return n;
+  // return n;
 
   int mod = n % m;
 

@@ -33,15 +33,16 @@
 
 #include <CL/sycl.hpp>
 #include <dpct/dpct.hpp>
+
 #include "common.h"
 
 // include kernels
+#include "addKernel.dp.hpp"
+#include "derivativesKernel.dp.hpp"
 #include "downscaleKernel.dp.hpp"
+#include "solverKernel.dp.hpp"
 #include "upscaleKernel.dp.hpp"
 #include "warpingKernel.dp.hpp"
-#include "derivativesKernel.dp.hpp"
-#include "solverKernel.dp.hpp"
-#include "addKernel.dp.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief method logic

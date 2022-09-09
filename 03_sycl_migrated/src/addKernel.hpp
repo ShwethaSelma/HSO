@@ -32,6 +32,7 @@
  */
 
 #include <CL/sycl.hpp>
+
 #include "common.h"
 
 using namespace sycl;
@@ -45,8 +46,8 @@ using namespace sycl;
 /// \param[in]  count vector size
 /// \param[out] sum   result
 ///////////////////////////////////////////////////////////////////////////////
-void AddKernel(const float *op1, const float *op2, int count,
-                          float *sum, sycl::nd_item<3> item_ct1) {
+void AddKernel(const float *op1, const float *op2, int count, float *sum,
+               sycl::nd_item<3> item_ct1) {
   const int pos = item_ct1.get_local_id(2) +
                   item_ct1.get_group(2) * item_ct1.get_local_range().get(2);
 
@@ -62,15 +63,14 @@ void AddKernel(const float *op1, const float *op2, int count,
 /// \param[in]  count vector size
 /// \param[out] sum   result
 ///////////////////////////////////////////////////////////////////////////////
-static void Add(const float *op1, const float *op2, int count, float *sum, queue q) {
+static void Add(const float *op1, const float *op2, int count, float *sum,
+                queue q) {
   sycl::range<3> threads(1, 1, 256);
   sycl::range<3> blocks(1, 1, iDivUp(count, threads[2]));
 
-  q.parallel_for(
-      sycl::nd_range<3>(blocks * threads, threads),
-      [=](sycl::nd_item<3> item_ct1) {
-        AddKernel(op1, op2, count, sum, item_ct1);
-      }).wait();
- 
+  q.parallel_for(sycl::nd_range<3>(blocks * threads, threads),
+                 [=](sycl::nd_item<3> item_ct1) {
+                   AddKernel(op1, op2, count, sum, item_ct1);
+                 })
+      .wait();
 }
-

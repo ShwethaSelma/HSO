@@ -36,15 +36,15 @@ const static char *const sSDKsample = "HSOpticalFlow";
 // CPU-GPU discrepancy threshold for self-test
 const float THRESHOLD = 0.05f;
 
+#include <helper_functions.h>
+
 #include <CL/sycl.hpp>
+#include <chrono>
+#include <cmath>
 
 #include "common.h"
 #include "flowGold.h"
 #include "flowSYCL.h"
-
-#include <helper_functions.h>
-#include <cmath>
-#include <chrono>
 
 using Time = std::chrono::steady_clock;
 using ms = std::chrono::milliseconds;
@@ -216,28 +216,28 @@ int main(int argc, char **argv) {
 
   // number of warping iterations
   const int nWarpIters = 3;
-  
+
   // start Host Timer
   auto startGoldTime = Time::now();
   ComputeFlowGold(h_source, h_target, width, height, stride, alpha, nLevels,
                   nWarpIters, nSolverIters, h_uGold, h_vGold);
-  
+
   // stop Host timer
   auto stopGoldTime = Time::now();
-  
-   // start Device Timer
+
+  // start Device Timer
   auto startSYCLTime = Time::now();
   ComputeFlowSYCL(h_source, h_target, width, height, stride, alpha, nLevels,
                   nWarpIters, nSolverIters, h_u, h_v);
-  
+
   // stop Device Timer
   auto stopSYCLTime = Time::now();
-  
+
   auto Gold_duration =
       std::chrono::duration_cast<float_ms>(stopGoldTime - startGoldTime)
           .count();
   printf("Processing time on CPU: %f (ms)\n", Gold_duration);
-  
+
   auto SYCL_duration =
       std::chrono::duration_cast<float_ms>(stopSYCLTime - startSYCLTime)
           .count();
