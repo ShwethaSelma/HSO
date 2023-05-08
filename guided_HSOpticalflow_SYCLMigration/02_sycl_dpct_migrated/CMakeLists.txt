@@ -6,4 +6,4 @@ add_executable (02_sycl_dpct_migrated src/main.cpp src/flowGold.cpp src/flowSYCL
 target_link_libraries(02_sycl_dpct_migrated sycl)
 
 add_custom_target (run_sdm_cpu cd ${CMAKE_SOURCE_DIR}/02_sycl_dpct_migrated/ && SYCL_DEVICE_FILTER=cpu ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/02_sycl_dpct_migrated)
-add_custom_target (run_sdm_gpu SYCL_DEVICE_FILTER=gpu cd ${CMAKE_SOURCE_DIR}/02_sycl_dpct_migrated/ && SYCL_DEVICE_FILTER=gpu ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/02_sycl_dpct_migrated)
+add_custom_target (run_sdm_gpu cd ${CMAKE_SOURCE_DIR}/02_sycl_dpct_migrated/ && SYCL_DEVICE_FILTER=gpu ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/02_sycl_dpct_migrated)
