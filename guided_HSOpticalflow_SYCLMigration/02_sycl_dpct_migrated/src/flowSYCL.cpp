@@ -30,7 +30,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <CL/sycl.hpp>
+#include <sycl/sycl.hpp>
 #include <dpct/dpct.hpp>
 #include <iostream>
 
@@ -77,6 +77,11 @@ void ComputeFlowSYCL(const float *I0, const float *I1, int width, int height,
   dpct::device_ext &dev_ct1 = dpct::get_current_device();
   sycl::queue &q_ct1 = dev_ct1.default_queue();
 
+  if(q_ct1.get_device().get_info<sycl::info::device::image_support>() == false){
+    std::cout << "\nOffload Device does not support Media, Exiting...\n\n";
+    exit(0);
+  }
+  
   printf("Computing optical flow on GPU...\n");
   std::cout << "\nRunning on "
             << q_ct1.get_device().get_info<sycl::info::device::name>() << "\n";

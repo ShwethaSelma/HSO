@@ -31,7 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <CL/sycl.hpp>
+#include <sycl/sycl.hpp>
 
 #include "common.h"
 
@@ -184,7 +184,7 @@ static void SolveForUpdate(const float *du0, const float *dv0, const float *Ix,
   // CTA size
   sycl::range<3> threads(1, 6, 32);
   auto max_wg_size =
-      q.get_device().get_info<cl::sycl::info::device::max_work_group_size>();
+      q.get_device().get_info<sycl::info::device::max_work_group_size>();
   if (max_wg_size < 6 * 32) {
     threads[0] = 1;
     threads[2] = 32;
